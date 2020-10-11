@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
@@ -39,6 +40,7 @@ class PlayerLayout @JvmOverloads constructor(
 
     private var mLayoutState = LAYOUT_STATE_FULL
 
+    private var firstY = 0.0F
     private var oldY = 0.0F
     private var mPipMoveState = PIP_MOVE_INIT
 
@@ -67,26 +69,26 @@ class PlayerLayout @JvmOverloads constructor(
     }
 
     fun isFullScreen() =
-        if(mLayoutState == LAYOUT_STATE_PIP)
-            false
-        else {
+        if(mLayoutState == LAYOUT_STATE_FULL && visibility == View.VISIBLE) {
             onPipLayoutAnimator()
             true
-        }
-
+        } else false
+    
     private fun initEvent() {
         mView.goPip.setOnClickListener {
             onPipLayoutAnimator()
         }
 
-        mView.setOnClickListener {  }
+        mView.setOnClickListener { }
 
         mView.ibPipClose.setOnClickListener {
             onPipCloseAnimator()
         }
 
         mView.videoPlayer.setOnTouchListener { _, event ->
-            if(mPipMoveState == PIP_MOVE_RUNNING || mLayoutState != LAYOUT_STATE_FULL) false
+            if(mPipMoveState == PIP_MOVE_RUNNING || mLayoutState != LAYOUT_STATE_FULL) {
+                return@setOnTouchListener false
+            }
 
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -100,8 +102,6 @@ class PlayerLayout @JvmOverloads constructor(
 
                     if(height < layoutPipHeight) height = layoutPipHeight //pip 크기만큼까지만 감소
                     if(height > displayHeight) height = displayHeight //디스플레이 height 까지만 증가
-
-                    Log.d("asd", "height: $height")
 
                     onChangeScreenSize(height)
 
@@ -258,12 +258,17 @@ class PlayerLayout @JvmOverloads constructor(
         }
     }
 
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if(mPipMoveState == PIP_MOVE_RUNNING || mLayoutState != LAYOUT_STATE_PIP) return true
 
         when(event?.action) {
             MotionEvent.ACTION_DOWN -> {
                 oldY = event.rawY
+                firstY = event.rawY
             }
             MotionEvent.ACTION_MOVE -> {
                 val moveY = event.rawY
@@ -304,14 +309,21 @@ class PlayerLayout @JvmOverloads constructor(
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 when(mPipMoveState) {
                     PIP_MOVE_DOWN -> {
-                        if(mView.y > layoutPipY + 30) { //30px 이상 내리면 자동 close 아니면 초기위치
-                            onPipCloseAnimator()
-                        }else {
-                            mView.y = layoutPipY.toFloat()
-                            onFullLayoutAnimator()
-                        }
+                        when {
+                            mView.y > layoutPipY + 20 -> { //20px 이상 내리면 자동 close 아니면 초기위치
+                                onPipCloseAnimator()
+                            }
 
-                        return true
+                            event.eventTime - event.downTime > 100L -> {
+                                mView.y = layoutPipY.toFloat()
+                                mPipMoveState = PIP_MOVE_INIT
+                            }
+
+                            event.eventTime - event.downTime <= 100L -> {
+                                mView.y = layoutPipY.toFloat()
+                                onFullLayoutAnimator()
+                            }
+                        }
                     }
                     PIP_MOVE_UP -> {
                         if(mView.height != layoutPipHeight) {
@@ -320,9 +332,9 @@ class PlayerLayout @JvmOverloads constructor(
                             onChangeScreenSize(layoutPipHeight)
                             mPipMoveState = PIP_MOVE_INIT
                         }
-                        return true
                     }
                 }
+                performClick()
             }
             else -> return super.onTouchEvent(event)
         }
