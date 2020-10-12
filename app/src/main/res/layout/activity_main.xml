@@ -19,21 +19,6 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-<!--    <fragment-->
-<!--        android:id="@+id/parentFragment"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"/>-->
-
-    <RelativeLayout
-        android:id="@+id/testVideoPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:layout_marginBottom="100dp"
-        android:layout_marginLeft="15dp"
-        android:visibility="gone"
-        android:layout_gravity="bottom"/>
-
     <com.example.myyoutubever2.view.PlayerLayout
         android:id="@+id/playerLayout"
         android:layout_width="match_parent"

@@ -16,14 +16,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.marginTop
 import com.example.myyoutubever2.R.layout.layout_player
 import com.example.myyoutubever2.utils.Utils
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_player.view.*
 
 class PlayerLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private val mView: View
+    private val mView = inflate(context, layout_player, this)
 
-    private val mDuration = 300L
+    private val mDuration = 200L
     private val padding = Utils.convertDpToPx(context, 15)
 
     private val displayWidth = Utils.getDisplayWidth(context)
@@ -45,10 +46,6 @@ class PlayerLayout @JvmOverloads constructor(
     private var mPipMoveState = PIP_MOVE_INIT
 
     init {
-        (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).also {
-            mView = it.inflate(layout_player, this)
-        }
-
         initEvent()
     }
 
@@ -66,6 +63,9 @@ class PlayerLayout @JvmOverloads constructor(
         }else {
             onFullLayoutAnimator()
         }
+
+        mView.playerView.initVideo("http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8")
+
     }
 
     fun isFullScreen() =
@@ -75,10 +75,6 @@ class PlayerLayout @JvmOverloads constructor(
         } else false
     
     private fun initEvent() {
-        mView.goPip.setOnClickListener {
-            onPipLayoutAnimator()
-        }
-
         mView.setOnClickListener { }
 
         mView.ibPipClose.setOnClickListener {

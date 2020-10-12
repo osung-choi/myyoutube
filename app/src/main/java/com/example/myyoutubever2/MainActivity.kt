@@ -10,10 +10,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        with(testVideoPlayer.layoutParams) {
-            width = 385
-            height = 216
-        }
+//        playerView.initVideo("http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8")
 
         click.setOnClickListener {
             playerLayout.startVideo()
