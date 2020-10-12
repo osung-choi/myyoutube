@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 //        playerView.initVideo("http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8")
-
+        lifecycle.addObserver(playerLayout)
         click.setOnClickListener {
             playerLayout.startVideo()
         }
