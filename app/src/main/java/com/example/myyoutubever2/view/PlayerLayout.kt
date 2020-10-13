@@ -4,21 +4,17 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Context
-import android.drm.DrmStore.Playback.STOP
 import android.util.AttributeSet
-import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
 import androidx.lifecycle.*
+import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R.layout.layout_player
 import com.example.myyoutubever2.utils.Utils
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_player.view.*
 import kotlinx.android.synthetic.main.view_video_player.view.*
 
@@ -51,6 +47,7 @@ class PlayerLayout @JvmOverloads constructor(
     private var mPipMoveState = PIP_MOVE_INIT
 
     private val videoUrl = "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8"
+    private val thumbnail = "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg"
 
     init {
         initEvent()
@@ -64,6 +61,9 @@ class PlayerLayout @JvmOverloads constructor(
 
     fun startVideo() {
         if(visibility != View.VISIBLE) {
+            visibility = View.VISIBLE
+            mView.videoAlpha.alpha = 0F //video 투명도 지정하는 배경 초기화
+
             setVideoViewSize(fullVideoWidth, fullVideoHeight)
 
             onShowLayoutAnimator()
@@ -71,7 +71,7 @@ class PlayerLayout @JvmOverloads constructor(
             onFullLayoutAnimator()
         }
 
-        mView.myVideoPlayer.initVideo(videoUrl)
+        mView.myVideoPlayer.initVideo(thumbnail, videoUrl)
     }
 
     fun isFullScreen() =
@@ -90,7 +90,6 @@ class PlayerLayout @JvmOverloads constructor(
     //라이프사이클에 따라 onPause일 경우 Player View Release
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {
-//        mView.myVideoPlayer.releaseVideo()
         mView.myVideoPlayer.stopVideo()
     }
 
@@ -152,8 +151,6 @@ class PlayerLayout @JvmOverloads constructor(
 
     //최초 Player Layout을 그릴 때 호출하는 함수, 애니메이션을 다르게 가져가기 위해 따로 구현.
     private fun onShowLayoutAnimator() {
-        visibility = View.VISIBLE
-
         ValueAnimator.ofInt(0, displayHeight).apply {
             addUpdateListener { anim ->
                 val value = anim.animatedValue as Int
@@ -196,7 +193,7 @@ class PlayerLayout @JvmOverloads constructor(
             mView.layoutPipContents.alpha = ((videoHeight - fullVideoHeight).toFloat() / (pipVideoHeight - fullVideoHeight).toFloat())
 
             setVideoViewSize(videoWidth, videoHeight)
-        } else if(videoHeight > fullVideoHeight && mView.myVideoPlayer.height != fullVideoHeight){
+        } else if(videoHeight > fullVideoHeight && mView.layoutVideoPlayer.height != fullVideoHeight){
             setVideoViewSize(fullVideoWidth, fullVideoHeight)
         }
     }
@@ -224,6 +221,7 @@ class PlayerLayout @JvmOverloads constructor(
     }
 
     private fun onPipLayoutAnimator() {
+        mView.videoPlayer.hideController()
         val minDisplayHeight = layoutPipY
         ValueAnimator.ofInt(mView.y.toInt(), minDisplayHeight).apply {
             addUpdateListener { anim ->
@@ -249,11 +247,12 @@ class PlayerLayout @JvmOverloads constructor(
 
     private fun onPipCloseAnimator() {
         //Exoplayer alpha 문제
-        val objectAlphaAnim = ObjectAnimator.ofFloat(this, "alpha", mView.alpha, 0f)
+        val playerAlphaAnim = ObjectAnimator.ofFloat(mView.videoAlpha, "alpha", mView.videoAlpha.alpha, 1f)
+        val contentsAlphaAnim = ObjectAnimator.ofFloat(mView.layoutPipContents, "alpha", mView.layoutPipContents.alpha, 0f)
         val objectTranslateAnim = ObjectAnimator.ofFloat(this, "translationY", pipVideoHeight.toFloat())
 
         AnimatorSet().apply {
-            play(objectTranslateAnim)//.with(objectAlphaAnim)
+            play(objectTranslateAnim).with(playerAlphaAnim).with(contentsAlphaAnim)
             duration = 100
 
             addListener(object: Animator.AnimatorListener {
@@ -274,7 +273,7 @@ class PlayerLayout @JvmOverloads constructor(
     }
 
     private fun setVideoViewSize(width: Int, height: Int) {
-        mView.myVideoPlayer.layoutParams = mView.myVideoPlayer.layoutParams.apply {
+        mView.layoutVideoPlayer.layoutParams = mView.layoutVideoPlayer.layoutParams.apply {
             this.width = width
             this.height = height
         }
@@ -322,6 +321,7 @@ class PlayerLayout @JvmOverloads constructor(
                         if(layoutPipY > mView.y) mView.y = layoutPipY.toFloat() //기준 PIP높이 이상은 올리지 못하도록 설정
 
                         mView.layoutPipContents.alpha = 1 - (mView.y - layoutPipY) / (displayHeight - layoutPipY) //내릴수록 투명하게
+                        mView.videoAlpha.alpha = (mView.y - layoutPipY) / (displayHeight - layoutPipY)
                     }
                     PIP_MOVE_UP -> {
                         var height = if(moveY < oldY) (mView.height + oldY - moveY).toInt()

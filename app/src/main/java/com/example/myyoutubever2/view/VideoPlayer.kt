@@ -4,10 +4,13 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -19,14 +22,9 @@ import kotlinx.android.synthetic.main.view_video_player.view.*
 
 class VideoPlayer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr), Player.EventListener {
     private val mView = inflate(context, R.layout.view_video_player, this)
     private var player: SimpleExoPlayer? = null
-
-    //재생중인 곡 저장하기 위한 변수 (현재는 활용을 못하는 중인데 활용 가능한 부분 있는지 검토)
-    private var playWhenReady = true
-    private var currentWindow = 0
-    private var playbackPosition = 0L
 
     init {
         initEvent()
@@ -38,25 +36,31 @@ class VideoPlayer @JvmOverloads constructor(
         }
     }
 
-    fun initVideo(videoUrl: String) {
+    fun initVideo(thumbnail: String, videoUrl: String) {
+        Glide.with(context)
+            .load(thumbnail)
+            .centerCrop()
+            .into(mView.videoThumbnail)
+
+        mView.videoThumbnail.visibility = View.VISIBLE
+
         if(player == null) {
             player = ExoPlayerFactory.newSimpleInstance(context.applicationContext)
+            player!!.addListener(this)
             mView.videoPlayer.player = player
-            mView.videoPlayer.controllerAutoShow = false
-            mView.videoPlayer.useController = false
         }
+
+        mView.videoPlayer.controllerAutoShow = false
+        mView.videoPlayer.useController = false
 
         val mediaSource = buildMediaSource(videoUrl)
         player!!.prepare(mediaSource)
-        player!!.seekTo(currentWindow, playbackPosition)
+        player!!.seekTo(0)
         player!!.playWhenReady = false
     }
 
     fun releaseVideo() {
         player?.let {
-            playWhenReady = it.playWhenReady
-            currentWindow = it.currentWindowIndex
-            playbackPosition = it.currentPosition
             mView.videoPlayer.player = null
             it.release()
             player = null
@@ -80,6 +84,11 @@ class VideoPlayer @JvmOverloads constructor(
         mView.videoPlayer.showController()
     }
 
+    fun hideController() {
+        mView.videoPlayer.hideController()
+        mView.videoPlayer.useController = false
+    }
+
     private fun buildMediaSource(url: String) : MediaSource {
         var userAgent:String = Util.getUserAgent(context, "project_name")
         val uri = Uri.parse(url)
@@ -89,6 +98,13 @@ class VideoPlayer @JvmOverloads constructor(
                 HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent)).createMediaSource(uri)
             else
                 ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent)).createMediaSource(uri)
+        }
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        Log.d("state", "ready : $playWhenReady ,state : $playbackState")
+        if(playWhenReady && playbackState == 3) {
+            mView.videoThumbnail.visibility = View.GONE //준비 완료되면 썸네일 이미지 가리기
         }
     }
 }
