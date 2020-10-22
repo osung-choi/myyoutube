@@ -6,17 +6,20 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R.layout.layout_player
 import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.layout_player.view.*
 import kotlinx.android.synthetic.main.view_video_player.view.*
+import kotlin.math.abs
 
 class PlayerLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -44,6 +47,7 @@ class PlayerLayout @JvmOverloads constructor(
 
     private var firstY = 0.0F
     private var oldY = 0.0F
+    private var touchState = TOUCH_STATE_CLICK //스와이프와 클릭이벤트 처리를 구분하기 위함 (이렇게 말고는 방법이 없었을까..)
     private var mPipMoveState = PIP_MOVE_INIT
 
     private val videoUrl = "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8"
@@ -114,9 +118,20 @@ class PlayerLayout @JvmOverloads constructor(
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     oldY = event.rawY
+                    firstY = event.rawY
+                    touchState = TOUCH_STATE_CLICK
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val moveY = event.rawY
+
+                    //첫 좌표에서 +- 50 만큼은 클릭 영역으로 구분
+                    //mView.height == displayHeight 넣지 않으면 중간에 뚝뚝 끊기는 시점 발생함. 최대 크기일 때만 클릭 영역 지정.
+                    if(mView.height == displayHeight && abs(moveY - firstY) < 50) {
+                        oldY = moveY
+                        return@setOnTouchListener true
+                    }
+
+                    touchState = TOUCH_STATE_SWIPE
 
                     var height = if(moveY < oldY) (mView.height + oldY - moveY).toInt()
                     else (mView.height - (moveY - oldY)).toInt()
@@ -124,18 +139,26 @@ class PlayerLayout @JvmOverloads constructor(
                     if(height < layoutPipHeight) height = layoutPipHeight //pip 크기만큼까지만 감소
                     if(height > displayHeight) height = displayHeight //디스플레이 height 까지만 증가
 
+                    if(mView.height != displayHeight && mView.myVideoPlayer.isVisibleController()) mView.myVideoPlayer.hideController()
+
                     onChangeScreenSize(height)
 
                     oldY = moveY
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    if(mView.height != displayHeight) { //하단 스와이프 애니메이션 수행
+                    if(mView.height + 50 < displayHeight) { //하단 스와이프 애니메이션 수행
                         onPipLayoutAnimator()
                     } else { //클릭 이벤트로 처리하기 위해, 풀 화면을 유지하고 Player의 Controller를 보여준다.
                         onChangeScreenSize(displayHeight)
                         mPipMoveState = PIP_MOVE_INIT
 
-                        mView.myVideoPlayer.showController()
+                        if(touchState == TOUCH_STATE_CLICK) {
+                            if(mView.myVideoPlayer.isVisibleController()) {
+                                mView.myVideoPlayer.hideController()
+                            }else {
+                                mView.myVideoPlayer.showController()
+                            }
+                        }
                     }
 
                     performClick()
@@ -233,7 +256,10 @@ class PlayerLayout @JvmOverloads constructor(
             addListener(object: Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {}
                 override fun onAnimationCancel(animation: Animator?) {}
-                override fun onAnimationStart(animation: Animator?) { mPipMoveState = PIP_MOVE_RUNNING }
+                override fun onAnimationStart(animation: Animator?) {
+                    if(mView.myVideoPlayer.isVisibleController()) mView.myVideoPlayer.hideController()
+                    mPipMoveState = PIP_MOVE_RUNNING
+                }
                 override fun onAnimationEnd(animation: Animator?) {
                     mPipMoveState = PIP_MOVE_INIT
                     mLayoutState = LAYOUT_STATE_PIP
@@ -381,5 +407,8 @@ class PlayerLayout @JvmOverloads constructor(
         const val PIP_MOVE_DOWN = 1
         const val PIP_MOVE_UP = 2
         const val PIP_MOVE_RUNNING = 3 //터치이벤트 막기
+
+        const val TOUCH_STATE_CLICK = 0
+        const val TOUCH_STATE_SWIPE = 1
     }
 }

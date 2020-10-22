@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
@@ -31,9 +32,7 @@ class VideoPlayer @JvmOverloads constructor(
     }
 
     private fun initEvent() {
-        mView.videoPlayer.setControllerVisibilityListener { //컨트롤러가 사라지면 컨트롤러를 사용하지 못하게 하므로써 터치이벤트를 수행할 수 있도록 한다.
-            if(it != View.VISIBLE) mView.videoPlayer.useController = false
-        }
+
     }
 
     fun initVideo(thumbnail: String, videoUrl: String) {
@@ -48,9 +47,11 @@ class VideoPlayer @JvmOverloads constructor(
             player = ExoPlayerFactory.newSimpleInstance(context.applicationContext)
             player!!.addListener(this)
             mView.videoPlayer.player = player
+            mView.videoPlayerController.player = player
         }
 
-        mView.videoPlayer.controllerAutoShow = false
+        mView.videoPlayerController.hide()
+        mView.videoPlayer.controllerAutoShow = true
         mView.videoPlayer.useController = false
 
         val mediaSource = buildMediaSource(videoUrl)
@@ -79,14 +80,14 @@ class VideoPlayer @JvmOverloads constructor(
         }
     }
 
+    fun isVisibleController() = mView.videoPlayerController.isVisible
+
     fun showController() {
-        mView.videoPlayer.useController = true
-        mView.videoPlayer.showController()
+        mView.videoPlayerController.show()
     }
 
     fun hideController() {
-        mView.videoPlayer.hideController()
-        mView.videoPlayer.useController = false
+        mView.videoPlayerController.hide()
     }
 
     private fun buildMediaSource(url: String) : MediaSource {
