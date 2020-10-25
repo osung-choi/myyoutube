@@ -5,16 +5,18 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
+import com.example.myyoutubever2.R
 import com.example.myyoutubever2.R.layout.layout_player
 import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.layout_player.view.*
@@ -25,23 +27,37 @@ class PlayerLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleOwner, LifecycleObserver {
     private val mView = inflate(context, layout_player, this)
-
     private val lifecycleRegistry = LifecycleRegistry(this)
 
     private val mDuration = 200L
     private val padding = Utils.convertDpToPx(context, 15)
 
-    private val displayWidth = Utils.getDisplayWidth(context)
-    private var displayHeight = Utils.getDisplayHeight(context)
+    private val displayWidth
+        get() = Utils.getDisplayWidth(context)
 
-    private val fullVideoWidth = displayWidth
-    private val fullVideoHeight = getScreenHeightFromWidth(fullVideoWidth)
+    private val displayHeight
+        get() = Utils.getDisplayHeight(context)
+
+    private val fullVideoWidth
+        get() = Utils.getDisplayWidth(context)
+
+    private val fullVideoHeight
+        get() = if(Utils.getOrientation(context) == Configuration.ORIENTATION_PORTRAIT) {
+            getScreenHeightFromWidth(fullVideoWidth)
+        }else {
+            Utils.getDisplayHeight(context)
+        }
 
     private val pipVideoWidth = Utils.convertDpToPx(context , 110)
     private val pipVideoHeight = getScreenHeightFromWidth(pipVideoWidth) //PIP에서 video view 높이
 
+    private val layoutPipWidth
+        get() = if(Utils.getOrientation(context) == Configuration.ORIENTATION_PORTRAIT) displayWidth
+                else displayHeight
+
     private val layoutPipHeight = pipVideoHeight + (padding * 2) //PIP에서 layout 높이
-    private val layoutPipY = displayHeight - pipVideoHeight - (padding * 2) //PIP에서 screen y Position
+    private val layoutPipY
+        get() = displayHeight - pipVideoHeight - (padding * 2) //PIP에서 screen y Position
 
     private var mLayoutState = LAYOUT_STATE_FULL
 
@@ -84,11 +100,27 @@ class PlayerLayout @JvmOverloads constructor(
             true
         } else false
 
+    //세로모드
+    fun setPortraitView() {
+        if(mLayoutState == LAYOUT_STATE_FULL) {
+            setLayoutSize(displayWidth, displayHeight)
+            setVideoViewSize(fullVideoWidth, fullVideoHeight)
+        }
+    }
+
+    //가로모드
+    fun setLandscapeView() {
+        if(mLayoutState == LAYOUT_STATE_FULL) {
+            setLayoutSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setVideoViewSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        }
+    }
+
     //라이프사이클에 따라 onStart일 경우 video가 Pause상태 이므로 Controller 표출
     //(visible 상태일 경우에만 수행하게 하여, 액티비티 첫 실행 시 부터 재생되는 문제 없도록 한다.)
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        if(visibility == View.VISIBLE) mView.myVideoPlayer.showController()
+        if(visibility == View.VISIBLE && mLayoutState == LAYOUT_STATE_FULL) mView.myVideoPlayer.showController() //풀 화면일때 포그라운드 전환시 컨트롤 뷰 표출
     }
 
     //라이프사이클에 따라 onPause일 경우 Player View Release
@@ -108,8 +140,42 @@ class PlayerLayout @JvmOverloads constructor(
             onPipCloseAnimator()
         }
 
+        mView.ibPipVideoPlay.setOnClickListener {
+            mView.myVideoPlayer.changeVideoState()
+        }
+
+        mView.myVideoPlayer.setControllerListener(object : VideoPlayer.VideoController {
+            override fun goPip() {
+                onPipLayoutAnimator()
+            }
+
+            override fun videoStateIdle() {
+            }
+
+            override fun videoStateBuffering() {
+            }
+
+            override fun videoStatePlaying() {
+                Glide.with(context)
+                    .load(R.drawable.ic_pause_circle)
+                    .into(mView.ibPipVideoPlay)
+            }
+
+            override fun videoStatePause() {
+                Glide.with(context)
+                    .load(R.drawable.ic_play_circle)
+                    .into(mView.ibPipVideoPlay)
+            }
+
+            override fun videoStateEnded() {
+            }
+        })
+
         //풀 화면에서 Player를 터치하여 아래로 내릴 경우 애니메이션 효과를 나타냄
-        //클릭이벤트와 스와이프를 구분하기 위한 민감도를 조정해야 할 필요 있음.
+        setDefaultVideoTouchEvent()
+    }
+
+    private fun setDefaultVideoTouchEvent() {
         mView.myVideoPlayer.setOnTouchListener { _, event ->
             if(mPipMoveState == PIP_MOVE_RUNNING || mLayoutState != LAYOUT_STATE_FULL) {
                 return@setOnTouchListener false
@@ -169,8 +235,25 @@ class PlayerLayout @JvmOverloads constructor(
         }
     }
 
+    private fun setLandscapeVideoTouchEvent() {
+        mView.myVideoPlayer.setOnTouchListener { _, event ->
+            when(event.action) {
+                MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                    if(mView.myVideoPlayer.isVisibleController()) {
+                        mView.myVideoPlayer.hideController()
+                    }else {
+                        mView.myVideoPlayer.showController()
+                    }
+
+                    performClick()
+                }
+            }
+
+            true
+        }
+    }
+
     private fun getScreenHeightFromWidth(width: Int) = width * 225 / 400
-    private fun getScreenWidthFromHeight(height: Int) = height * 400 / 225
 
     //최초 Player Layout을 그릴 때 호출하는 함수, 애니메이션을 다르게 가져가기 위해 따로 구현.
     private fun onShowLayoutAnimator() {
@@ -202,21 +285,23 @@ class PlayerLayout @JvmOverloads constructor(
     }
 
     private fun onChangeScreenSize(height: Int) {
-        setLayoutSize(displayWidth, height)
-
         val paddingValue = (padding - (padding * (height - layoutPipHeight) / (displayHeight - layoutPipHeight))).also {
             setPadding(it, it, it, it)
         }
 
+        val rangeWidth = displayWidth - layoutPipWidth
+        val rangeVideoWidth = fullVideoWidth - pipVideoWidth
         val videoHeight = height - (paddingValue * 2) //위아래 padding
 
+        val width = (layoutPipWidth + (rangeWidth * (1 - ((height - displayHeight).toFloat() / (layoutPipHeight - displayHeight).toFloat())))).toInt()
+        val videoWidth = (pipVideoWidth + (rangeVideoWidth * (1 - ((videoHeight - fullVideoHeight).toFloat() / (pipVideoHeight - fullVideoHeight).toFloat())))).toInt()
+
+        setLayoutSize(width, height)
+
         if(videoHeight <= fullVideoHeight) {
-            val videoWidth = getScreenWidthFromHeight(videoHeight)
-
             mView.layoutPipContents.alpha = ((videoHeight - fullVideoHeight).toFloat() / (pipVideoHeight - fullVideoHeight).toFloat())
-
             setVideoViewSize(videoWidth, videoHeight)
-        } else if(videoHeight > fullVideoHeight && mView.layoutVideoPlayer.height != fullVideoHeight){
+        }else {
             setVideoViewSize(fullVideoWidth, fullVideoHeight)
         }
     }
@@ -246,6 +331,7 @@ class PlayerLayout @JvmOverloads constructor(
     private fun onPipLayoutAnimator() {
         mView.videoPlayer.hideController()
         val minDisplayHeight = layoutPipY
+
         ValueAnimator.ofInt(mView.y.toInt(), minDisplayHeight).apply {
             addUpdateListener { anim ->
                 val value = anim.animatedValue as Int
@@ -316,7 +402,7 @@ class PlayerLayout @JvmOverloads constructor(
         return super.performClick()
     }
 
-    //터치이벤트 감도 개선
+    //PIP 상태에서 터치이벤트를 처리하기 위함
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if(mPipMoveState == PIP_MOVE_RUNNING || mLayoutState != LAYOUT_STATE_PIP) return true
 
@@ -327,6 +413,13 @@ class PlayerLayout @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> {
                 val moveY = event.rawY
+
+                if(layoutPipY.toFloat() == mView.y
+                    && layoutPipHeight == mView.height
+                    && abs(moveY-firstY) < 50) {
+                    oldY = moveY
+                    return true
+                }
 
                 if(mPipMoveState == PIP_MOVE_INIT) { //초기에 아래로 내리는건지, 올리는건지 결정하고 터치이벤트가 끝나기 전까지 하나의 상태만 수행
                     mPipMoveState = if(moveY > oldY) {
@@ -364,30 +457,16 @@ class PlayerLayout @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 when(mPipMoveState) {
-                    PIP_MOVE_DOWN -> {
-                        when {
-                            mView.y > layoutPipY + 20 -> { //20px 이상 내리면 자동 close 아니면 초기위치
-                                onPipCloseAnimator()
-                            }
-
-                            event.eventTime - event.downTime > 100L -> {
-                                mView.y = layoutPipY.toFloat()
-                                mPipMoveState = PIP_MOVE_INIT
-                            }
-
-                            event.eventTime - event.downTime <= 100L -> {
-                                mView.y = layoutPipY.toFloat()
-                                onFullLayoutAnimator()
-                            }
-                        }
+                    PIP_MOVE_INIT -> onFullLayoutAnimator()
+                    PIP_MOVE_DOWN -> if(mView.y != layoutPipY.toFloat()) {
+                        onPipCloseAnimator()
+                    }else {
+                        mPipMoveState = PIP_MOVE_INIT
                     }
-                    PIP_MOVE_UP -> {
-                        if(mView.height != layoutPipHeight) {
-                            onFullLayoutAnimator()
-                        } else {
-                            onChangeScreenSize(layoutPipHeight)
-                            mPipMoveState = PIP_MOVE_INIT
-                        }
+                    PIP_MOVE_UP -> if(mView.height != layoutPipHeight) {
+                        onFullLayoutAnimator()
+                    }else {
+                        mPipMoveState = PIP_MOVE_INIT
                     }
                 }
                 performClick()
