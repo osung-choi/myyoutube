@@ -33,6 +33,10 @@ class VideoPlayer @JvmOverloads constructor(
         mView.videoPlayerController.goPip.setOnClickListener {
             controller?.goPip()
         }
+
+        mView.videoPlayerController.ibChangescreen.setOnClickListener {
+            controller?.changeOrientation()
+        }
     }
 
     fun initVideo(thumbnail: String, videoUrl: String) {
@@ -145,6 +149,7 @@ class VideoPlayer @JvmOverloads constructor(
 
     interface VideoController {
         fun goPip()
+        fun changeOrientation()
         fun videoStateIdle()
         fun videoStateBuffering()
         fun videoStatePlaying()

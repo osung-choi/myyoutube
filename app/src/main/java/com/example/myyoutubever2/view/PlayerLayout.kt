@@ -7,7 +7,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -66,6 +65,8 @@ class PlayerLayout @JvmOverloads constructor(
     private var touchState = TOUCH_STATE_CLICK //스와이프와 클릭이벤트 처리를 구분하기 위함 (이렇게 말고는 방법이 없었을까..)
     private var mPipMoveState = PIP_MOVE_INIT
 
+    private var orientationStateListener : (() -> Unit)? = null
+
     private val videoUrl = "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8"
     private val thumbnail = "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg"
 
@@ -92,6 +93,10 @@ class PlayerLayout @JvmOverloads constructor(
         }
 
         mView.myVideoPlayer.initVideo(thumbnail, videoUrl)
+    }
+
+    fun setChangeOrientation(listener : () -> Unit) {
+        this.orientationStateListener = listener
     }
 
     fun isFullScreen() =
@@ -149,6 +154,10 @@ class PlayerLayout @JvmOverloads constructor(
                 onPipLayoutAnimator()
             }
 
+            override fun changeOrientation() {
+                orientationStateListener?.invoke()
+            }
+
             override fun videoStateIdle() {
             }
 
@@ -183,11 +192,18 @@ class PlayerLayout @JvmOverloads constructor(
 
             when(event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    oldY = event.rawY
-                    firstY = event.rawY
-                    touchState = TOUCH_STATE_CLICK
+                    if(Utils.getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE &&
+                            event.rawY < 200) {
+                        touchState = TOUCH_STATE_NONE
+                    }else {
+                        oldY = event.rawY
+                        firstY = event.rawY
+                        touchState = TOUCH_STATE_CLICK
+                    }
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    if(touchState == TOUCH_STATE_NONE) return@setOnTouchListener false
+
                     val moveY = event.rawY
 
                     //첫 좌표에서 +- 50 만큼은 클릭 영역으로 구분
@@ -212,6 +228,11 @@ class PlayerLayout @JvmOverloads constructor(
                     oldY = moveY
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if(touchState == TOUCH_STATE_NONE) {
+                        touchState = PIP_MOVE_INIT
+                        return@setOnTouchListener false
+                    }
+
                     if(mView.height + 50 < displayHeight) { //하단 스와이프 애니메이션 수행
                         onPipLayoutAnimator()
                     } else { //클릭 이벤트로 처리하기 위해, 풀 화면을 유지하고 Player의 Controller를 보여준다.
@@ -225,24 +246,6 @@ class PlayerLayout @JvmOverloads constructor(
                                 mView.myVideoPlayer.showController()
                             }
                         }
-                    }
-
-                    performClick()
-                }
-            }
-
-            true
-        }
-    }
-
-    private fun setLandscapeVideoTouchEvent() {
-        mView.myVideoPlayer.setOnTouchListener { _, event ->
-            when(event.action) {
-                MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                    if(mView.myVideoPlayer.isVisibleController()) {
-                        mView.myVideoPlayer.hideController()
-                    }else {
-                        mView.myVideoPlayer.showController()
                     }
 
                     performClick()
@@ -489,5 +492,6 @@ class PlayerLayout @JvmOverloads constructor(
 
         const val TOUCH_STATE_CLICK = 0
         const val TOUCH_STATE_SWIPE = 1
+        const val TOUCH_STATE_NONE = 2 //터치이벤트 무
     }
 }
