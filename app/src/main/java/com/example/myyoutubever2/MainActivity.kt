@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myyoutubever2.fragment.PlayerFragment
 import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.abs
@@ -19,21 +20,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        lifecycle.addObserver(playerLayout)
+//        lifecycle.addObserver(playerLayout)
 
         click.setOnClickListener {
-            playerLayout.startVideo()
+            val sampleVideo = Utils.getSampleVideoData()
+            val playerFragment = PlayerFragment.newInstance(sampleVideo)
+            fragmentPlayer.visibility = View.VISIBLE
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentPlayer, playerFragment)
+                .commit()
+//            playerLayout.startVideo(sampleVideo)
         }
 
-        playerLayout.setChangeOrientation {
-            requestedOrientation = if(Utils.getOrientation(this) == Configuration.ORIENTATION_LANDSCAPE) {
-                setOrientationPortraitListener()
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-            }else {
-                setOrientationLandscapeListener()
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            }
-        }
+
+//        playerLayout.setChangeOrientation {
+//            requestedOrientation = if(Utils.getOrientation(this) == Configuration.ORIENTATION_LANDSCAPE) {
+//                setOrientationPortraitListener()
+//                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+//            }else {
+//                setOrientationLandscapeListener()
+//                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+//            }
+//        }
 
         /*
         * 화면 회전에 따라 돌아간 각도가 반환되는 함수.
@@ -114,18 +122,18 @@ class MainActivity : AppCompatActivity() {
         when(newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> { //세로 전환
                 showStatusBar()
-                playerLayout.setPortraitView()
+//                playerLayout.setPortraitView()
             }
             Configuration.ORIENTATION_LANDSCAPE -> { //가로 전환
                 doFullScreen()
-                playerLayout.setLandscapeView()
+//                playerLayout.setLandscapeView()
             }
         }
     }
 
     override fun onBackPressed() {
-        if(!playerLayout.isFullScreen()) {
-            super.onBackPressed()
-        }
+//        if(!playerLayout.isFullScreen()) {
+//            super.onBackPressed()
+//        }
     }
 }
