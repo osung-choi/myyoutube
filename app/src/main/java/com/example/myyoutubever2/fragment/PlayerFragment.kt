@@ -11,11 +11,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.data.Video
 import com.example.myyoutubever2.utils.Utils
 import com.example.myyoutubever2.view.VideoPlayer
+import com.example.myyoutubever2.viewmodel.PlayerFragViewModel
 import kotlinx.android.synthetic.main.fragment_player.view.*
 import kotlinx.android.synthetic.main.view_video_player.view.*
 import kotlin.math.abs
@@ -44,6 +46,7 @@ class PlayerFragment : Fragment() {
 
     private lateinit var video: Video
     private lateinit var mView: View
+    private lateinit var viewModel: PlayerFragViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +77,14 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.mView = view
+
+        val videoRecommendFragment = VideoRecommendFragment.newInstance()
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragmentVideoContents, videoRecommendFragment)
+            .commit()
+
+        viewModel = ViewModelProvider(this).get(PlayerFragViewModel::class.java)
+        viewModel.setVideoData(video)
 
         initSize()
         initEvent()
