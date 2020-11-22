@@ -9,6 +9,8 @@ import com.example.myyoutubever2.data.Video
 
 
 object Utils {
+    fun getScreenHeightFromWidth(width: Int) = width * 225 / 400
+
     fun convertDpToPx(context: Context, dp: Int): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,

@@ -88,13 +88,13 @@ class PlayerFragment : Fragment() {
         displayHeight = Utils.getDisplayHeight(context!!)
         fullVideoWidth = Utils.getDisplayWidth(context!!)
         fullVideoHeight = if(Utils.getOrientation(context!!) == Configuration.ORIENTATION_PORTRAIT) {
-            getScreenHeightFromWidth(fullVideoWidth)
+            Utils.getScreenHeightFromWidth(fullVideoWidth)
         }else {
             Utils.getDisplayHeight(context!!)
         }
 
         pipVideoWidth = Utils.convertDpToPx(context!! , 110)
-        pipVideoHeight = getScreenHeightFromWidth(pipVideoWidth) //PIP에서 video view 높이
+        pipVideoHeight = Utils.getScreenHeightFromWidth(pipVideoWidth) //PIP에서 video view 높이
 
         layoutPipWidth= if(Utils.getOrientation(context!!) == Configuration.ORIENTATION_PORTRAIT) displayWidth
         else displayHeight
@@ -335,7 +335,8 @@ class PlayerFragment : Fragment() {
                                 mView.translationY += moveY
                             }
 
-                            mView.alpha = 1 - (mView.translationY) / (mView.height) //내릴수록 투명하게
+                            mView.layoutPipContents.alpha = 1 - (mView.translationY) / (mView.height) //내릴수록 투명하게
+                            mView.videoAlpha.alpha = (mView.translationY) / (mView.height)
                         }
                         PIP_MOVE_UP -> {
                             var height = if(newY < oldY) (mView.height + oldY - newY).toInt()
@@ -372,8 +373,6 @@ class PlayerFragment : Fragment() {
             return@setOnTouchListener true
         }
     }
-
-    private fun getScreenHeightFromWidth(width: Int) = width * 225 / 400
 
     //최초 Player Layout을 그릴 때 호출하는 함수, 애니메이션을 다르게 가져가기 위해 따로 구현.
     private fun onShowLayoutAnimator() {
@@ -483,11 +482,20 @@ class PlayerFragment : Fragment() {
 
     private fun onPipCloseAnimator() {
         //Exoplayer alpha 문제
-        val playerAlphaAnim = ObjectAnimator.ofFloat(mView.videoAlpha, "alpha", mView.videoAlpha.alpha, 1f)
-        val objectTranslateAnim = ObjectAnimator.ofFloat(mView, "translationY", mView.height.toFloat())
+        val playerContentsAlphaAnim = ObjectAnimator.ofFloat(mView.layoutPipContents,
+            "alpha",
+            mView.layoutPipContents.alpha,
+            0f)
+        val playerAlphaAnim = ObjectAnimator.ofFloat(mView.videoAlpha,
+            "alpha",
+            mView.videoAlpha.alpha,
+            1f)
+        val objectTranslateAnim = ObjectAnimator.ofFloat(mView,
+            "translationY",
+            mView.height.toFloat())
 
         AnimatorSet().apply {
-            play(objectTranslateAnim).with(playerAlphaAnim)
+            play(objectTranslateAnim).with(playerAlphaAnim).with(playerContentsAlphaAnim)
             duration = 100
 
             addListener(object: Animator.AnimatorListener {

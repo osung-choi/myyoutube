@@ -7,4 +7,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="style_video_title">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="style_video_information">
+        <item name="android:textColor">@color/color_video_information</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
 </resources>
