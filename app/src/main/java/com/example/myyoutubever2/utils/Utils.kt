@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import com.example.myyoutubever2.data.Video
 
 
 object Utils {
@@ -33,7 +34,31 @@ object Utils {
         }else {
             context.resources.displayMetrics.heightPixels
         }
+    }
 
+    fun getSampleVideoData(): Video {
+        var seq = 1
+
+        val recommendVideoList = arrayListOf<Video>()
+        for (j in 0 until 10) {
+            val sampleRecommendVideo = Video(seq++,
+                "비디오 제목 샘플",
+                "비디오 내용 샘플",
+                "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
+                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
+                100,
+                5)
+            recommendVideoList.add(sampleRecommendVideo)
+        }
+
+        return Video(seq,
+            "비디오 제목 샘플",
+            "비디오 내용 샘플",
+            "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
+            "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
+            100,
+            5,
+            recommendVideoList)
     }
 
     private fun getStatusBarHeight(context: Context): Int {
