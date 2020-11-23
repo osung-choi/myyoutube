@@ -18,7 +18,8 @@
         <com.example.myyoutubever2.view.VideoPlayer
             android:id="@+id/myVideoPlayer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@android:color/black"/>
 
         <View
             android:id="@+id/videoAlpha"
