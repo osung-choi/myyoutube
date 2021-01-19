@@ -21,15 +21,7 @@ class VideoRecommendFragment : Fragment() {
 
     private lateinit var viewModel: PlayerFragViewModel
     private lateinit var binding : VideoRecommendFragmentBinding
-//    private lateinit var video: Video
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-//        arguments?.let {
-//            video = it.getSerializable(PARAM_VIDEO) as Video
-//        }
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,14 +48,6 @@ class VideoRecommendFragment : Fragment() {
     }
 
     companion object {
-//        private const val PARAM_VIDEO = "param_video"
-//
-//        fun newInstance(video: Video) = VideoRecommendFragment().apply {
-//            arguments = Bundle().apply {
-//                putSerializable(PARAM_VIDEO, video)
-//            }
-//        }
-
         fun newInstance() = VideoRecommendFragment()
     }
 
