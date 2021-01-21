@@ -16,6 +16,8 @@
             android:id="@+id/listVideoRecommend"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fadingEdge="none"
+            android:overScrollMode="never"
             tools:videoRecommendItem="@{viewModel.videoData}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

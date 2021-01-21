@@ -41,10 +41,6 @@ class VideoRecommendFragment : Fragment() {
 
         binding.listVideoRecommend.layoutManager = LinearLayoutManager(context)
         binding.listVideoRecommend.adapter = VideoRecommendAdapter()
-
-        viewModel.videoData.observe(viewLifecycleOwner) {
-            Log.d("asd","asd")
-        }
     }
 
     companion object {

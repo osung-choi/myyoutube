@@ -96,7 +96,7 @@ class PlayerFragment : Fragment() {
     private fun initSize() {
         padding = Utils.convertDpToPx(context!!, 10)
         displayWidth = Utils.getDisplayWidth(context!!)
-        displayHeight = Utils.getDisplayHeight(context!!)
+        displayHeight = Utils.getDisplayHeight(context!!) + 50
         fullVideoWidth = Utils.getDisplayWidth(context!!)
         fullVideoHeight = if(Utils.getOrientation(context!!) == Configuration.ORIENTATION_PORTRAIT) {
             Utils.getScreenHeightFromWidth(fullVideoWidth)

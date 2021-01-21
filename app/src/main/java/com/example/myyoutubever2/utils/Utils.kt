@@ -31,11 +31,12 @@ object Utils {
     }
 
     fun getDisplayHeight(context: Context) : Int {
-        return if(getOrientation(context) == Configuration.ORIENTATION_PORTRAIT) {
-            context.resources.displayMetrics.heightPixels - getStatusBarHeight(context)
-        }else {
-            context.resources.displayMetrics.heightPixels
-        }
+        return context.resources.displayMetrics.heightPixels
+//        return if(getOrientation(context) == Configuration.ORIENTATION_PORTRAIT) {
+//            context.resources.displayMetrics.heightPixels //- getStatusBarHeight(context)
+//        }else {
+//            context.resources.displayMetrics.heightPixels
+//        }
     }
 
     fun getSampleVideoData(): Video {
