@@ -56,7 +56,7 @@ object Utils {
         var seq = System.currentTimeMillis().toInt()
 
         val recommendVideo = RecommendVideo()
-        for (j in 0 until 10) {
+        for (j in 0 until 20) {
             val sampleRecommendVideo = Video(seq++,
                 "비디오 제목 샘플",
                 "비디오 내용 샘플",

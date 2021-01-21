@@ -39,6 +39,7 @@ class VideoRecommendAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             = if(position == 0) videoInformationType else videoRecommendType
 
     fun setRecommendVideoList(recommendVideo: ArrayList<Video>) {
+        items.clear()
         items.addAll(recommendVideo)
     }
 

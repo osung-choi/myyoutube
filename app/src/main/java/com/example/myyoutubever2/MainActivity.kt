@@ -1,31 +1,45 @@
 package com.example.myyoutubever2
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.myyoutubever2.databinding.ActivityMainBinding
+import com.example.myyoutubever2.fragment.MainVideoListFragment
 import com.example.myyoutubever2.fragment.PlayerFragment
-import com.example.myyoutubever2.utils.Utils
 import com.example.myyoutubever2.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
+    private val tabName = arrayListOf("홈","탐색","구독","보관함")
+
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        val sampleVideo = Utils.getSampleVideoData()
-        val playerFragment = PlayerFragment.newInstance(sampleVideo)
-        fragmentPlayer.visibility = View.VISIBLE
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentPlayer, playerFragment)
-            .commit()
+        initUI()
+
+//        val sampleVideo = Utils.getSampleVideoData()
+//        val playerFragment = PlayerFragment.newInstance(sampleVideo)
+//        fragmentPlayer.visibility = View.VISIBLE
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragmentPlayer, playerFragment)
+//            .commit()
+    }
+
+    private fun initUI() {
+        binding.mainPager.adapter = ViewPagerAdapter(this)
+
+        TabLayoutMediator(binding.mainTab, binding.mainPager) { tab, position ->
+            tab.text = tabName[position]
+        }.attach()
     }
 
     override fun onBackPressed() {
@@ -36,5 +50,19 @@ class MainActivity : AppCompatActivity() {
         }else {
             super.onBackPressed()
         }
+    }
+
+    private inner class ViewPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
+        val fragmentList = arrayListOf<Fragment>()
+
+        init {
+            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
+            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
+            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
+            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
+        }
+
+        override fun getItemCount() = fragmentList.size
+        override fun createFragment(position: Int) = fragmentList[position]
     }
 }

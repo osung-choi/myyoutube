@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="video_play_time">12sp</dimen>
+    <dimen name="main_tab_height">48dp</dimen>
 </resources>
