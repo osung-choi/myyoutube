@@ -13,5 +13,4 @@ data class Video(
     val videoPath: String, //비디오 경로
     val likeCount: Int, //좋아요 수
     val replyCount: Int, //댓글 수
-    val recommendVideo: ArrayList<Video> = ArrayList() //추천 영상
 ): Serializable
