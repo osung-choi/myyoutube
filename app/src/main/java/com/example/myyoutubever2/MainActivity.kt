@@ -1,6 +1,9 @@
 package com.example.myyoutubever2
 
 import android.os.Bundle
+import android.util.Log
+import android.view.DragEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -11,6 +14,7 @@ import com.example.myyoutubever2.databinding.ActivityMainBinding
 import com.example.myyoutubever2.fragment.MainVideoListFragment
 import com.example.myyoutubever2.fragment.PlayerFragment
 import com.example.myyoutubever2.viewmodel.MainViewModel
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         initUI()
-
+        initEvent()
 //        val sampleVideo = Utils.getSampleVideoData()
 //        val playerFragment = PlayerFragment.newInstance(sampleVideo)
 //        fragmentPlayer.visibility = View.VISIBLE
@@ -36,10 +40,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         binding.mainPager.adapter = ViewPagerAdapter(this)
+        binding.mainPager.isUserInputEnabled = false
 
         TabLayoutMediator(binding.mainTab, binding.mainPager) { tab, position ->
             tab.text = tabName[position]
         }.attach()
+    }
+
+    private fun initEvent() {
+        binding.mainTab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.position?.let {
+                    binding.mainPager.setCurrentItem(it, false)
+                }
+            }
+        })
     }
 
     override fun onBackPressed() {
