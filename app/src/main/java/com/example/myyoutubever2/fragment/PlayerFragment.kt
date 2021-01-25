@@ -94,7 +94,7 @@ class PlayerFragment : Fragment() {
     }
 
     private fun initSize() {
-        padding = Utils.convertDpToPx(context!!, 10)
+        padding = 0 //Utils.convertDpToPx(context!!, 10)
         displayWidth = Utils.getDisplayWidth(context!!)
         displayHeight = Utils.getDisplayHeight(context!!) + 50
         fullVideoWidth = Utils.getDisplayWidth(context!!)

@@ -10,9 +10,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.adapter.MainVideoListAdapter
-import com.example.myyoutubever2.databinding.ActivityMainBinding
 import com.example.myyoutubever2.databinding.MainVideoListFragmentBinding
 import com.example.myyoutubever2.viewmodel.MainVideoListViewModel
+import com.example.myyoutubever2.viewmodel.MainViewModel
 
 class MainVideoListFragment : Fragment() {
 
@@ -38,7 +38,10 @@ class MainVideoListFragment : Fragment() {
         binding.viewModel = viewModel
 
         binding.mainVideoList.layoutManager = LinearLayoutManager(context)
-        binding.mainVideoList.adapter = MainVideoListAdapter()
+        binding.mainVideoList.adapter = MainVideoListAdapter {
+            val mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+            mainViewModel.startVideo(it)
+        }
 
         viewModel.setRecommendVideoList()
     }
