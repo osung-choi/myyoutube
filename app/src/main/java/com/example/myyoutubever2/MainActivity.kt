@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -57,6 +59,13 @@ class MainActivity : AppCompatActivity() {
                     binding.appbar.setExpanded(true, true) //AppBar 영역을 동적으로 show/hide 하는 함수.
                 }
             }
+        })
+
+        viewModel.playerViewHeight.observe(this, {
+            Log.d("ASD", "$it")
+            val layoutParams = binding.fragmentPlayer.layoutParams as FrameLayout.LayoutParams
+            layoutParams.bottomMargin = it.toInt()
+            binding.fragmentPlayer.layoutParams = layoutParams
         })
 
         viewModel.playVideo.observe(this, {

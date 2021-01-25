@@ -10,6 +10,7 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -17,6 +18,7 @@ import com.example.myyoutubever2.R
 import com.example.myyoutubever2.data.Video
 import com.example.myyoutubever2.utils.Utils
 import com.example.myyoutubever2.view.VideoPlayer
+import com.example.myyoutubever2.viewmodel.MainViewModel
 import com.example.myyoutubever2.viewmodel.PlayerFragViewModel
 import kotlinx.android.synthetic.main.fragment_player.view.*
 import kotlinx.android.synthetic.main.view_video_player.view.*
@@ -35,7 +37,8 @@ class PlayerFragment : Fragment() {
     private var pipVideoHeight = 0
     private var layoutPipWidth = 0
     private var layoutPipHeight = 0
-    private var layoutPipY= 0
+    private var layoutPipY = 0
+    private var pipMarginBottom = 0
 
     private var mLayoutState = LAYOUT_STATE_FULL
 
@@ -47,6 +50,8 @@ class PlayerFragment : Fragment() {
     private lateinit var video: Video
     private lateinit var mView: View
     private lateinit var viewModel: PlayerFragViewModel
+
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +91,8 @@ class PlayerFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(PlayerFragViewModel::class.java)
         viewModel.setVideoData(video)
 
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
         initSize()
         initEvent()
         startVideo(video)
@@ -106,6 +113,7 @@ class PlayerFragment : Fragment() {
 
         pipVideoWidth = Utils.convertDpToPx(context!! , 110)
         pipVideoHeight = Utils.getScreenHeightFromWidth(pipVideoWidth) //PIP에서 video view 높이
+        pipMarginBottom = Utils.convertDpToPx(context!!, 48)
 
         layoutPipWidth= if(Utils.getOrientation(context!!) == Configuration.ORIENTATION_PORTRAIT) displayWidth
         else displayHeight
@@ -395,6 +403,8 @@ class PlayerFragment : Fragment() {
                 setLayoutSize(displayWidth, value)
                 mView.setPadding(paddingValue, paddingValue, paddingValue, paddingValue)
 
+                val margin = getMarginBottom(value)
+                mainViewModel.bottomTabAnimation(margin)
                 //ExoPlayer에서 alpha 값을 조정하면 아예 안보이는 문제 있어서 임시적으로 제한
 //                alpha = value.toFloat() / displayHeight
             }
@@ -427,6 +437,9 @@ class PlayerFragment : Fragment() {
         val videoWidth = (pipVideoWidth + (rangeVideoWidth * (1 - ((videoHeight - fullVideoHeight).toFloat() / (pipVideoHeight - fullVideoHeight).toFloat())))).toInt()
 
         setLayoutSize(width, height)
+
+        val margin = getMarginBottom(height)
+        mainViewModel.bottomTabAnimation(margin)
 
         if(videoHeight <= fullVideoHeight) {
             mView.layoutPipContents.alpha = ((videoHeight - fullVideoHeight).toFloat() / (pipVideoHeight - fullVideoHeight).toFloat())
@@ -599,6 +612,15 @@ class PlayerFragment : Fragment() {
             this.width = width
             this.height = height
         }
+    }
+
+    private fun getMarginBottom(height: Int): Float {
+        return pipMarginBottom * (displayHeight - height) / (displayHeight - pipVideoHeight).toFloat()
+//        val margin = pipMarginBottom * (displayHeight - height) / (displayHeight - pipVideoHeight)
+//
+//        val layoutParams = mView.layoutParams as FrameLayout.LayoutParams
+//        layoutParams.bottomMargin = margin
+//        mView.layoutParams = layoutParams
     }
 
     companion object {

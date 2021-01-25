@@ -9,7 +9,14 @@ class MainViewModel: ViewModel() {
     private val _playVideo = MutableLiveData<Video>()
     val playVideo: LiveData<Video> = _playVideo
 
+    private val _playerViewHeight = MutableLiveData<Float>()
+    val playerViewHeight: LiveData<Float> = _playerViewHeight
+
     fun startVideo(video: Video) {
         _playVideo.value = video
+    }
+
+    fun bottomTabAnimation(margin: Float) {
+        _playerViewHeight.value = margin
     }
 }
