@@ -3,15 +3,13 @@ package com.example.myyoutubever2.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myyoutubever2.R
-import com.example.myyoutubever2.data.Video
-import com.example.myyoutubever2.viewmodel.MainViewModel
+import com.example.myyoutubever2.database.entity.VideoDB
 import kotlinx.android.synthetic.main.adapter_video_recommend.view.*
 
-class MainVideoListAdapter(listener: (Video) -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items = arrayListOf<Video>()
+class MainVideoListAdapter(listener: (VideoDB) -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val items = arrayListOf<VideoDB>()
     private val listener = listener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
@@ -26,17 +24,17 @@ class MainVideoListAdapter(listener: (Video) -> Unit): RecyclerView.Adapter<Recy
         }
     }
 
-    fun setRecommendVideoList(videoList: ArrayList<Video>) {
+    fun setRecommendVideoList(videoDBList: List<VideoDB>) {
         items.clear()
-        items.addAll(videoList)
+        items.addAll(videoDBList)
     }
 
     private inner class MainVideoListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(video: Video) {
-            itemView.videoPreview.setVideoPreview(video)
+        fun bind(videoDB: VideoDB) {
+            itemView.videoPreview.setVideoPreview(videoDB)
 
             itemView.setOnClickListener {
-                listener.invoke(video)
+                listener.invoke(videoDB)
             }
         }
     }

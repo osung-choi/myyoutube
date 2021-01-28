@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myyoutubever2.R
-import com.example.myyoutubever2.data.Video
+import com.example.myyoutubever2.database.entity.VideoDB
 import kotlinx.android.synthetic.main.adapter_video_recommend.view.*
 
 class VideoRecommendAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items = arrayListOf<Video>()
+    private val items = arrayListOf<VideoDB>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             videoInformationType -> VideoInformationViewHolder(
@@ -38,9 +38,9 @@ class VideoRecommendAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int)
             = if(position == 0) videoInformationType else videoRecommendType
 
-    fun setRecommendVideoList(recommendVideo: ArrayList<Video>) {
+    fun setRecommendVideoList(recommendVideoDB: List<VideoDB>) {
         items.clear()
-        items.addAll(recommendVideo)
+        items.addAll(recommendVideoDB)
     }
 
     inner class VideoInformationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -50,8 +50,8 @@ class VideoRecommendAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class VideoRecommendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(video: Video) {
-            itemView.videoPreview.setVideoPreview(video)
+        fun bind(videoDB: VideoDB) {
+            itemView.videoPreview.setVideoPreview(videoDB)
         }
     }
 

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R
-import com.example.myyoutubever2.data.Video
+import com.example.myyoutubever2.database.entity.VideoDB
 import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.view_video_preview.view.*
 
@@ -21,9 +21,9 @@ class VideoPreview @JvmOverloads constructor(
             height = Utils.getScreenHeightFromWidth(width)
         }
     }
-    fun setVideoPreview(video: Video) {
+    fun setVideoPreview(videoDB: VideoDB) {
         Glide.with(context)
-            .load(video.thumbnailPath)
+            .load(videoDB.thumbnailPath)
            .centerCrop()
             .into(mView.videoThumbnail)
 
@@ -32,7 +32,7 @@ class VideoPreview @JvmOverloads constructor(
             .centerCrop()
             .into(mView.profileImage)
 
-        mView.videoTitle.text = video.title
+        mView.videoTitle.text = videoDB.title
 
         //example
         mView.videoDuration.text = "11:45"

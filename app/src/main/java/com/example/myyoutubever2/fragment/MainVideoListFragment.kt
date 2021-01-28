@@ -35,6 +35,9 @@ class MainVideoListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainVideoListViewModel::class.java)
+
+        //viewModel = ViewModelProvider(this).get(MainVideoListViewModel::class.java)
+
         binding.viewModel = viewModel
 
         binding.mainVideoList.layoutManager = LinearLayoutManager(context)
@@ -44,5 +47,9 @@ class MainVideoListFragment : Fragment() {
         }
 
         viewModel.setRecommendVideoList()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 }

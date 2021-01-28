@@ -1,29 +1,28 @@
 package com.example.myyoutubever2
 
 import android.os.Bundle
-import android.util.Log
-import android.view.DragEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.myyoutubever2.database.AppDatabase
 import com.example.myyoutubever2.databinding.ActivityMainBinding
+import com.example.myyoutubever2.fragment.MainSubscribeFragment
 import com.example.myyoutubever2.fragment.MainVideoListFragment
 import com.example.myyoutubever2.fragment.PlayerFragment
-import com.example.myyoutubever2.utils.Utils
 import com.example.myyoutubever2.viewmodel.MainViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private val tabName = arrayListOf("홈","탐색","구독","보관함")
+    private val tabName = arrayListOf("홈","구독")
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
@@ -62,13 +61,12 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.playerViewHeight.observe(this, {
-            Log.d("ASD", "$it")
             val layoutParams = binding.fragmentPlayer.layoutParams as FrameLayout.LayoutParams
             layoutParams.bottomMargin = it.toInt()
             binding.fragmentPlayer.layoutParams = layoutParams
         })
 
-        viewModel.playVideo.observe(this, {
+        viewModel.playVideoDB.observe(this, {
             val playerFragment = PlayerFragment.newInstance(it)
             fragmentPlayer.visibility = View.VISIBLE
             supportFragmentManager.beginTransaction()
@@ -92,9 +90,7 @@ class MainActivity : AppCompatActivity() {
 
         init {
             fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
-            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
-            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
-            fragmentList.add(MainVideoListFragment.newInstance()) //메인 홈(영상 리스트)
+            fragmentList.add(MainSubscribeFragment.newInstance()) //메인 구독 리스트
         }
 
         override fun getItemCount() = fragmentList.size

@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelStoreOwner
-import com.example.myyoutubever2.data.RecommendVideo
-import com.example.myyoutubever2.data.Video
-import java.lang.IllegalStateException
+import com.example.myyoutubever2.database.entity.SubscribeDB
+import com.example.myyoutubever2.database.entity.VideoDB
 
 
 object Utils {
@@ -43,31 +40,47 @@ object Utils {
 //        }
     }
 
-    fun getSampleVideoData(): Video {
-        var seq = System.currentTimeMillis().toInt()
-
-        return Video(seq,
-            "비디오 제목 샘플",
-            "비디오 내용 샘플",
-            "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
-            "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
-            100,
-            5)
+    fun getSubscribeSampleData() : List<SubscribeDB> {
+        return listOf(SubscribeDB(0,1,2),
+            SubscribeDB(0,1,4),
+            SubscribeDB(0,1,5),
+            SubscribeDB(0,1,7),
+            SubscribeDB(0,1,10),
+            SubscribeDB(0,1,12),
+            SubscribeDB(0,1,13),
+            SubscribeDB(0,1,16),
+            SubscribeDB(0,1,17),
+            SubscribeDB(0,1,19),
+            SubscribeDB(0,1,21))
     }
 
-    fun getRecommendVideoData() : RecommendVideo {
+//    fun getSampleVideoData(): VideoDB {
+//        var seq = System.currentTimeMillis().toInt()
+//
+//        return VideoDB(seq,
+//            1,
+//            "비디오 제목 샘플",
+//            "비디오 내용 샘플",
+//            "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
+//            "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
+//            100,
+//            5)
+//    }
+//
+    fun getRecommendVideoData() : List<VideoDB> {
         var seq = System.currentTimeMillis().toInt()
 
-        val recommendVideo = RecommendVideo()
+        val recommendVideo = ArrayList<VideoDB>()
         for (j in 0 until 20) {
-            val sampleRecommendVideo = Video(seq++,
+            val sampleRecommendVideo = VideoDB(seq++,
+                1,
                 "비디오 제목 샘플",
                 "비디오 내용 샘플",
                 "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
                 "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
                 100,
                 5)
-            recommendVideo.videoList.add(sampleRecommendVideo)
+            recommendVideo.add(sampleRecommendVideo)
         }
 
         return recommendVideo

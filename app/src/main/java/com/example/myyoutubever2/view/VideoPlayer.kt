@@ -141,7 +141,6 @@ class VideoPlayer @JvmOverloads constructor(
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        Log.d("state", "ready : $playWhenReady ,state : $playbackState")
         if(playWhenReady && playbackState == 3) {
             mView.videoThumbnail.visibility = View.GONE //준비 완료되면 썸네일 이미지 가리기
         }

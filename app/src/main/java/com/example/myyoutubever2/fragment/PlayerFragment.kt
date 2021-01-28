@@ -10,12 +10,11 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R
-import com.example.myyoutubever2.data.Video
+import com.example.myyoutubever2.database.entity.VideoDB
 import com.example.myyoutubever2.utils.Utils
 import com.example.myyoutubever2.view.VideoPlayer
 import com.example.myyoutubever2.viewmodel.MainViewModel
@@ -47,7 +46,7 @@ class PlayerFragment : Fragment() {
     private var touchState = TOUCH_STATE_CLICK //스와이프와 클릭이벤트 처리를 구분하기 위함 (이렇게 말고는 방법이 없었을까..)
     private var mPipMoveState = PIP_MOVE_INIT
 
-    private lateinit var video: Video
+    private lateinit var videoDB: VideoDB
     private lateinit var mView: View
     private lateinit var viewModel: PlayerFragViewModel
 
@@ -56,7 +55,7 @@ class PlayerFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            video = it.getSerializable(PARAM_VIDEO) as Video
+            videoDB = it.getSerializable(PARAM_VIDEO) as VideoDB
         }
     }
 
@@ -88,14 +87,15 @@ class PlayerFragment : Fragment() {
             .replace(R.id.fragmentVideoContents, videoRecommendFragment)
             .commit()
 
-        viewModel = ViewModelProvider(this).get(PlayerFragViewModel::class.java)
-        viewModel.setVideoData(video)
+        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
+            .get(PlayerFragViewModel::class.java)
+        viewModel.setVideoData(videoDB)
 
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
         initSize()
         initEvent()
-        startVideo(video)
+        startVideo(videoDB)
 
         setStatusBarChange(Utils.getOrientation(context!!))
     }
@@ -165,20 +165,13 @@ class PlayerFragment : Fragment() {
     }
 
     //비디오 정보 + 추천 비디오 정보를 한번에 넘겨주기
-    private fun startVideo(video: Video) {
-//        if(mView.visibility != View.VISIBLE) {
-//            mView.visibility = View.VISIBLE
-//
-//        }else {
-//            onFullLayoutAnimator()
-//        }
-
+    private fun startVideo(videoDB: VideoDB) {
         mView.videoAlpha.alpha = 0F //video 투명도 지정하는 배경 초기화
 
         setVideoViewSize(fullVideoWidth, fullVideoHeight)
         onShowLayoutAnimator()
 
-        mView.myVideoPlayer.initVideo(video.thumbnailPath, video.videoPath)
+        mView.myVideoPlayer.initVideo(videoDB.thumbnailPath, videoDB.videoPath)
     }
 
     fun isFullScreen() =
@@ -639,7 +632,7 @@ class PlayerFragment : Fragment() {
 
         private const val PARAM_VIDEO = "param_video"
         @JvmStatic
-        fun newInstance(param1: Video) =
+        fun newInstance(param1: VideoDB) =
             PlayerFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(PARAM_VIDEO, param1)
