@@ -26,7 +26,7 @@ class MainVideoListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_video_list_fragment, container, false)
 
         return binding.root
@@ -34,22 +34,19 @@ class MainVideoListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainVideoListViewModel::class.java)
-
-        //viewModel = ViewModelProvider(this).get(MainVideoListViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainVideoListViewModel::class.java]
 
         binding.viewModel = viewModel
 
         binding.mainVideoList.layoutManager = LinearLayoutManager(context)
         binding.mainVideoList.adapter = MainVideoListAdapter {
-            val mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+            val mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
             mainViewModel.startVideo(it)
         }
 
-        viewModel.setRecommendVideoList()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        viewModel.setRecommendVideoList().observe(viewLifecycleOwner, {
+            val adapter = binding.mainVideoList.adapter as MainVideoListAdapter
+            adapter.setRecommendVideoList(it)
+        })
     }
 }

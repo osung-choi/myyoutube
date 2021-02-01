@@ -37,6 +37,11 @@ class VideoRecommendFragment : Fragment() {
 
         binding.listVideoRecommend.layoutManager = LinearLayoutManager(context)
         binding.listVideoRecommend.adapter = VideoRecommendAdapter()
+
+        viewModel.recommendVideoData.observe(viewLifecycleOwner, {
+            val adapter = binding.listVideoRecommend.adapter as VideoRecommendAdapter
+            adapter.setRecommendVideoList(it)
+        })
     }
 
     companion object {

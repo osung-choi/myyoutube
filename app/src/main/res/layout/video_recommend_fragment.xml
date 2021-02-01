@@ -18,8 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="none"
-            android:overScrollMode="never"
-            tools:videoRecommendItem="@{viewModel.recommendVideoData}"/>
+            android:overScrollMode="never"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,15 +1,14 @@
 package com.example.myyoutubever2.database.repository
 
-import android.app.Application
+import androidx.lifecycle.LiveData
 import com.example.myyoutubever2.database.AppDatabase
 import com.example.myyoutubever2.database.entity.VideoDB
-import io.reactivex.Maybe
 
 class VideoRepository {
     private val database = AppDatabase.getInstance()
     private val dao = database.videoDao()
 
-    fun selectVideoAll() : Maybe<List<VideoDB>> {
+    fun selectVideoAll() : LiveData<List<VideoDB>> {
         return dao.selectVideoAll()
     }
 

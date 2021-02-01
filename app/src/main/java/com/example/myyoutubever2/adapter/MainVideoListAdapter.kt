@@ -27,6 +27,7 @@ class MainVideoListAdapter(listener: (VideoDB) -> Unit): RecyclerView.Adapter<Re
     fun setRecommendVideoList(videoDBList: List<VideoDB>) {
         items.clear()
         items.addAll(videoDBList)
+        notifyDataSetChanged()
     }
 
     private inner class MainVideoListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

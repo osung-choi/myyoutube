@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -57,6 +58,7 @@ class PlayerFragment : Fragment() {
         arguments?.let {
             videoDB = it.getSerializable(PARAM_VIDEO) as VideoDB
         }
+
     }
 
     override fun onStart() {
@@ -87,11 +89,10 @@ class PlayerFragment : Fragment() {
             .replace(R.id.fragmentVideoContents, videoRecommendFragment)
             .commit()
 
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-            .get(PlayerFragViewModel::class.java)
+        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(requireActivity().application))[PlayerFragViewModel::class.java]
         viewModel.setVideoData(videoDB)
 
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         initSize()
         initEvent()
