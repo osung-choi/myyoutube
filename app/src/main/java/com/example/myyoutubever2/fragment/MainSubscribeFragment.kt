@@ -31,13 +31,16 @@ class MainSubscribeFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainSubscribeViewModel::class.java)
 
         initEvent()
-
-        viewModel.getMySubscribeList(0)
     }
 
     private fun initEvent() {
-        viewModel.mySubscriList.observe(viewLifecycleOwner, {
-            Log.d("TAG", "${it.size}")
+        val mySeq = 0
+        viewModel.getMySubscribeList(mySeq).observe(viewLifecycleOwner, {
+            Log.d("tag", "${it}")
+        })
+
+        viewModel.getSubscribeUserVideoList(mySeq).observe(viewLifecycleOwner, {
+            Log.d("tag", "${it}")
         })
     }
 }

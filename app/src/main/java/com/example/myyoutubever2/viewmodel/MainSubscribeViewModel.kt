@@ -1,22 +1,30 @@
 package com.example.myyoutubever2.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.myyoutubever2.database.entity.SubscribeDB
+import com.example.myyoutubever2.database.entity.VideoDB
 import com.example.myyoutubever2.database.repository.SubscribeRepository
-import kotlinx.coroutines.launch
+import com.example.myyoutubever2.database.repository.VideoRepository
+import io.reactivex.disposables.CompositeDisposable
 
 class MainSubscribeViewModel : ViewModel() {
-    private val repo = SubscribeRepository()
+    private val compositeDisposable = CompositeDisposable()
 
-    private val _mySubscribeList = MutableLiveData<List<SubscribeDB>>()
-    val mySubscriList: LiveData<List<SubscribeDB>> = _mySubscribeList
+    private val subscribeRepo = SubscribeRepository()
+    private val videoRepo = VideoRepository()
 
-    fun getMySubscribeList(seq: Int) {
-         viewModelScope.launch {
-            _mySubscribeList.value = repo.getMySubscribeList(seq)
-        }
+
+    fun getMySubscribeList(seq: Int): LiveData<List<SubscribeDB>> {
+        return subscribeRepo.getMySubscribeList(seq)
+    }
+
+    fun getSubscribeUserVideoList(seq: Int): LiveData<List<VideoDB>> {
+        return videoRepo.getSubscribeUserVideoList(seq)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        compositeDisposable.clear()
     }
 }

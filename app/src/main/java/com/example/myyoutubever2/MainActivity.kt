@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.myyoutubever2.database.AppDatabase
+import com.example.myyoutubever2.database.entity.SubscribeDB
 import com.example.myyoutubever2.databinding.ActivityMainBinding
 import com.example.myyoutubever2.fragment.MainSubscribeFragment
 import com.example.myyoutubever2.fragment.MainVideoListFragment

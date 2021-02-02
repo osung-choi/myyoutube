@@ -5,7 +5,7 @@ import androidx.room.Insert
 import com.example.myyoutubever2.database.entity.UserDB
 
 @Dao
-interface UserDAO {
+interface UserDAO: BaseDAO<UserDB> {
 
 
 }
