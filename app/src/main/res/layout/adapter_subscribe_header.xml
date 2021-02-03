@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="userDB"
+            type="com.example.myyoutubever2.database.entity.UserDB" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:padding="10dp"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <ImageView
+            android:id="@+id/userProfileImg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/icon_default_profile"
+            app:circleImageSrc="@{userDB.profileImg}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/userNickName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="@{userDB.nickname}"
+            tools:text="홍길동"
+            app:layout_constraintLeft_toLeftOf="@id/userProfileImg"
+            app:layout_constraintRight_toRightOf="@id/userProfileImg"
+            app:layout_constraintTop_toBottomOf="@id/userProfileImg"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

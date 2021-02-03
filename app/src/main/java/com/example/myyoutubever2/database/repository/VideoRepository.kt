@@ -12,7 +12,7 @@ class VideoRepository {
         return dao.selectVideoAll()
     }
 
-    fun getRecommendVideoList(seqList: List<Int>) : LiveData<List<VideoDB>> {
+    suspend fun getRecommendVideoList(seqList: List<Int>) : List<VideoDB> {
         return dao.getUserVideoList(seqList)
     }
 

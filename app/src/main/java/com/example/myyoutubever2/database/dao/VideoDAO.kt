@@ -12,7 +12,7 @@ interface VideoDAO: BaseDAO<VideoDB> {
     fun selectVideoAll(): LiveData<List<VideoDB>>
 
     @Query("SELECT * FROM VideoDB WHERE userSeq IN (:seqList)")
-    fun getUserVideoList(seqList: List<Int>) : LiveData<List<VideoDB>>
+    suspend fun getUserVideoList(seqList: List<Int>) : List<VideoDB>
 
     @Query("SELECT video.* FROM SubscribeDB AS subscribe LEFT JOIN VideoDB AS video ON subscribe.userSubscribeSeq = video.userSeq WHERE subscribe.userSeq = :seq")
     fun getSubscribeUserVideoList(seq: Int): LiveData<List<VideoDB>>

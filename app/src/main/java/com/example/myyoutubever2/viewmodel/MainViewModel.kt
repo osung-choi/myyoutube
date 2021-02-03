@@ -19,4 +19,6 @@ class MainViewModel: ViewModel() {
     fun bottomTabAnimation(margin: Float) {
         _playerViewHeight.value = margin
     }
+
+
 }

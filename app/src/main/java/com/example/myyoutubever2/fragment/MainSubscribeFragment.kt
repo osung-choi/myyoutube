@@ -7,9 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myyoutubever2.R
+import com.example.myyoutubever2.adapter.MainSubscribeAdapter
+import com.example.myyoutubever2.databinding.MainSubscribeFragmentBinding
 import com.example.myyoutubever2.viewmodel.MainSubscribeViewModel
+import com.example.myyoutubever2.viewmodel.MainViewModel
 
 class MainSubscribeFragment : Fragment() {
 
@@ -18,29 +22,51 @@ class MainSubscribeFragment : Fragment() {
     }
 
     private lateinit var viewModel: MainSubscribeViewModel
+    private lateinit var binding: MainSubscribeFragmentBinding
+    private lateinit var mAdapter: MainSubscribeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.main_subscribe_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.main_subscribe_fragment, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainSubscribeViewModel::class.java)
 
+        initUi()
         initEvent()
+    }
+
+    private fun initUi() {
+        mAdapter = MainSubscribeAdapter(context!!)
+
+        with(binding.mySubscribeList) {
+            layoutManager = LinearLayoutManager(context)
+            this.adapter = mAdapter
+        }
     }
 
     private fun initEvent() {
         val mySeq = 0
-        viewModel.getMySubscribeList(mySeq).observe(viewLifecycleOwner, {
-            Log.d("tag", "${it}")
+        viewModel.getMySubscribeUserList(mySeq).observe(viewLifecycleOwner, {
+            mAdapter.setSubscribeUserList(it)
         })
 
         viewModel.getSubscribeUserVideoList(mySeq).observe(viewLifecycleOwner, {
-            Log.d("tag", "${it}")
+            mAdapter.setVideoList(it)
         })
+
+        mAdapter.setSubscribeUserClickListener {
+
+        }
+
+        mAdapter.setVideoClickListener {
+            val mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+            mainViewModel.startVideo(it)
+        }
     }
 }
