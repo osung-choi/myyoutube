@@ -10,6 +10,6 @@ import io.reactivex.Maybe
 @Dao
 interface SubscribeDAO: BaseDAO<SubscribeDB> {
     @Query("SELECT * FROM SubscribeDB where userSeq = :seq")
-    fun getMySubscribeList(seq: Int): LiveData<List<SubscribeDB>>
+    suspend fun getMySubscribeList(seq: Int): List<SubscribeDB>
 
 }

@@ -8,21 +8,14 @@ import kotlinx.coroutines.launch
 class PlayerFragViewModel : ViewModel() {
     private val videoRepo = VideoRepository()
 
-    private val _videoData = MutableLiveData<VideoDB>()
-    val videoDBData : LiveData<VideoDB> = _videoData
-
     private val _recommendVideoData = MutableLiveData<List<VideoDB>>()
     val recommendVideoData : LiveData<List<VideoDB>> = _recommendVideoData
 
-    fun setVideoData(videoDB: VideoDB) {
-        _videoData.value = videoDB
-
-        val userSeq = videoDB.userSeq
-
-        val recommendSeq = getRecommendUserSeq(userSeq)
+    fun setRecommendVideo(videoUserSeq: Int) {
+        val recommendSeq = getRecommendUserSeq(videoUserSeq)
 
         viewModelScope.launch {
-            _recommendVideoData.value = videoRepo.getRecommendVideoList(recommendSeq)
+            _recommendVideoData.value = videoRepo.getUserVideoList(recommendSeq)
         }
     }
 

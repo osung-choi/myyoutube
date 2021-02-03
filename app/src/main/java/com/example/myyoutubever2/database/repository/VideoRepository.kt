@@ -8,15 +8,15 @@ class VideoRepository {
     private val database = AppDatabase.getInstance()
     private val dao = database.videoDao()
 
-    fun selectVideoAll() : LiveData<List<VideoDB>> {
+    suspend fun selectVideoAll() : List<VideoDB> {
         return dao.selectVideoAll()
     }
 
-    suspend fun getRecommendVideoList(seqList: List<Int>) : List<VideoDB> {
+    suspend fun getUserVideoList(seqList: List<Int>) : List<VideoDB> {
         return dao.getUserVideoList(seqList)
     }
 
-    fun getSubscribeUserVideoList(seq: Int) : LiveData<List<VideoDB>> {
+    suspend fun getSubscribeUserVideoList(seq: Int) : List<VideoDB> {
         return dao.getSubscribeUserVideoList(seq)
     }
 }

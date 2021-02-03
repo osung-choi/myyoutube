@@ -39,6 +39,9 @@ class MainSubscribeFragment : Fragment() {
 
         initUi()
         initEvent()
+
+        val mySeq = 0
+        viewModel.getMySubscribeUserList(mySeq)
     }
 
     private fun initUi() {
@@ -51,17 +54,16 @@ class MainSubscribeFragment : Fragment() {
     }
 
     private fun initEvent() {
-        val mySeq = 0
-        viewModel.getMySubscribeUserList(mySeq).observe(viewLifecycleOwner, {
+        viewModel.subscribeUserList.observe(viewLifecycleOwner, {
             mAdapter.setSubscribeUserList(it)
         })
 
-        viewModel.getSubscribeUserVideoList(mySeq).observe(viewLifecycleOwner, {
+        viewModel.subscribeVideoList.observe(viewLifecycleOwner, {
             mAdapter.setVideoList(it)
         })
 
         mAdapter.setSubscribeUserClickListener {
-
+            viewModel.getUserVideoList(it.userSeq)
         }
 
         mAdapter.setVideoClickListener {

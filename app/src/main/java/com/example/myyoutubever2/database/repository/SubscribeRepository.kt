@@ -10,7 +10,7 @@ class SubscribeRepository {
     private val database = AppDatabase.getInstance()
     private val dao = database.subscribeDao()
 
-    fun getMySubscribeList(seq: Int) : LiveData<List<SubscribeDB>> {
+    suspend fun getMySubscribeList(seq: Int) : List<SubscribeDB> {
         return dao.getMySubscribeList(seq)
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.adapter.MainVideoListAdapter
@@ -44,9 +45,11 @@ class MainVideoListFragment : Fragment() {
             mainViewModel.startVideo(it)
         }
 
-        viewModel.setRecommendVideoList().observe(viewLifecycleOwner, {
+        viewModel.allVideoList.observe(viewLifecycleOwner, {
             val adapter = binding.mainVideoList.adapter as MainVideoListAdapter
             adapter.setRecommendVideoList(it)
         })
+
+        viewModel.setRecommendVideoList()
     }
 }

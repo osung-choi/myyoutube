@@ -8,7 +8,7 @@ class UserRepository {
     private val database = AppDatabase.getInstance()
     private val dao = database.userDao()
 
-    fun getMySubscribeUserList(seq: Int): LiveData<List<UserDB>> {
+    suspend fun getMySubscribeUserList(seq: Int): List<UserDB> {
         return dao.getMySubscribeUserList(seq)
     }
 }

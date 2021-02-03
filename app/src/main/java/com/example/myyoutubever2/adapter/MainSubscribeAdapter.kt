@@ -57,14 +57,13 @@ class MainSubscribeAdapter(val context: Context): RecyclerView.Adapter<RecyclerV
     fun setSubscribeUserList(items: List<UserDB>) {
         subscribeUserList.clear()
         subscribeUserList.addAll(items)
-        //notifyDataSetChanged()
         notifyItemChanged(0)
     }
 
     fun setVideoList(items: List<VideoDB>) {
         videoList.clear()
         videoList.addAll(items)
-        notifyItemChanged(1, items.size)
+        notifyDataSetChanged()
     }
 
 
