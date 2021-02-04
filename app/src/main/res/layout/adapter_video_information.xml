@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="100dp">
+<layout>
+    <data>
+        <variable
+            name="video"
+            type="com.example.myyoutubever2.database.entity.VideoDB" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</LinearLayout>
+        <com.greenfrvr.hashtagview.HashtagView
+            android:id="@+id/videoHashTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rowGravity="center"
+            app:tagPaddingBottom="5dp"
+            app:tagPaddingLeft="13dp"
+            app:tagPaddingRight="13dp"
+            app:tagPaddingTop="5dp"
+            app:tagTextColor="#394ee5"
+            app:tagTextSize="14dp" />/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

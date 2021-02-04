@@ -89,7 +89,7 @@ class PlayerFragment : Fragment() {
             .commit()
 
         viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(requireActivity().application))[PlayerFragViewModel::class.java]
-        viewModel.setRecommendVideo(videoDB.userSeq)
+        viewModel.setRecommendVideo(videoDB)
 
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
