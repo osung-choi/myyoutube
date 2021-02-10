@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ImageView
+            android:id="@+id/videoContentsImage"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
+            tools:src="@drawable/ic_thumb_up"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:id="@+id/videoContentsName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            tools:text="1.9천"
+            app:layout_constraintTop_toBottomOf="@id/videoContentsImage"
+            app:layout_constraintLeft_toLeftOf="@id/videoContentsImage"
+            app:layout_constraintRight_toRightOf="@id/videoContentsImage"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

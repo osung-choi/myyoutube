@@ -27,5 +27,14 @@ data class VideoDB(
     var thumbnailPath: String = "", //비디오 썸네일 경로
     var videoPath: String = "", //비디오 경로
     var likeCount: Int = 0, //좋아요 수
-    var replyCount: Int = 0, //댓글 수
-): Serializable
+    var notLikeCount: Int = 0, //싫어요 수
+    var replyCount: Int = 0 //댓글 수
+): Serializable {
+    fun getLikeCount(): String {
+        return "$likeCount"
+    }
+
+    fun getNotLikeCount(): String {
+        return "$notLikeCount"
+    }
+}

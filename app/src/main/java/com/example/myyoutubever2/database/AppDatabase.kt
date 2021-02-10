@@ -76,9 +76,9 @@ abstract class AppDatabase : RoomDatabase() {
                         db.execSQL("insert into SubscribeDB (userSeq, userSubscribeSeq) values (0, 21)")
 
                         for(i in 0..21) {
-                            db.execSQL("insert into VideoDB (userSeq, title, contents, thumbnailPath, videoPath, likeCount, replyCount) values ($i, '$i 번이 올린 비디오 1', '$i 번이 올린 비디오 내용 1', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 100, 5)")
-                            db.execSQL("insert into VideoDB (userSeq, title, contents, thumbnailPath, videoPath, likeCount, replyCount) values ($i, '$i 번이 올린 비디오 2', '$i 번이 올린 비디오 내용 2', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 100, 5)")
-                            db.execSQL("insert into VideoDB (userSeq, title, contents, thumbnailPath, videoPath, likeCount, replyCount) values ($i, '$i 번이 올린 비디오 3', '$i 번이 올린 비디오 내용 3', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 100, 5)")
+                            db.execSQL("insert into VideoDB (userSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount) values ($i, '$i 번이 올린 비디오 1', '$i 번이 올린 비디오 내용 1', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 572, 13, 5)")
+                            db.execSQL("insert into VideoDB (userSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount) values ($i, '$i 번이 올린 비디오 2', '$i 번이 올린 비디오 내용 2', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 572, 13, 5)")
+                            db.execSQL("insert into VideoDB (userSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount) values ($i, '$i 번이 올린 비디오 3', '$i 번이 올린 비디오 내용 3', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 572, 13, 5)")
                         }
 
                     }

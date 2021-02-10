@@ -65,6 +65,9 @@ class VideoRecommendAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(video: VideoDB?) {
             video?.let {
                 binding.video = it
+
+//                binding.videoLike.setLikeCount(video.likeCount)
+//                binding.notVideoLike.setLikeCount(video.notLikeCount)
             }
         }
     }
