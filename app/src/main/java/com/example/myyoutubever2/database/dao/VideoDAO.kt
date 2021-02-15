@@ -1,11 +1,8 @@
 package com.example.myyoutubever2.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Update
 import com.example.myyoutubever2.database.entity.VideoDB
-import com.example.myyoutubever2.database.entity.VideoData
 
 @Dao
 interface VideoDAO: BaseDAO<VideoDB> {

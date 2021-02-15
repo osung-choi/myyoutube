@@ -32,4 +32,5 @@ data class VideoDB(
     var replyCount: Int = 0, //댓글 수
     var viewCount: Int = 0, //조회 수
     var uploadDate: Long = 0, //업로드 날짜
+    @Embedded var user: UserDB = UserDB()
 ): Serializable

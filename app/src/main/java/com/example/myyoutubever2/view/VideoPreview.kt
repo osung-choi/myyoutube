@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.database.entity.VideoDB
-import com.example.myyoutubever2.database.entity.VideoData
 import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.view_video_preview.view.*
 
@@ -29,7 +28,7 @@ class VideoPreview @JvmOverloads constructor(
             .into(mView.videoThumbnail)
 
         Glide.with(context)
-            .load(R.mipmap.ic_launcher)
+            .load(R.drawable.icon_default_profile)
             .centerCrop()
             .into(mView.profileImage)
 
@@ -37,7 +36,7 @@ class VideoPreview @JvmOverloads constructor(
 
         //example
         mView.videoDuration.text = "11:45"
-        mView.videoInformation.text = "팔배게 | 조회수 ${Utils.getSnsViewCount(videoDB.viewCount)} | 2개월전"
+        mView.videoInformation.text = "${videoDB.user.nickname} | 조회수 ${Utils.getSnsViewCount(videoDB.viewCount)} | 2개월전"
 
     }
 }
