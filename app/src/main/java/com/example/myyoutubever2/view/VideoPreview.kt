@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.database.entity.VideoDB
+import com.example.myyoutubever2.database.entity.VideoData
 import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.view_video_preview.view.*
 
@@ -36,7 +37,7 @@ class VideoPreview @JvmOverloads constructor(
 
         //example
         mView.videoDuration.text = "11:45"
-        mView.videoInformation.text = "팔배게 | 조회수 71만회 | 1개월전"
+        mView.videoInformation.text = "팔배게 | 조회수 ${Utils.getSnsViewCount(videoDB.viewCount)} | 2개월전"
 
     }
 }

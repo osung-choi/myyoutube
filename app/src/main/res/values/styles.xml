@@ -14,7 +14,7 @@
 
     <style name="style_video_information">
         <item name="android:textColor">@color/color_video_information</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

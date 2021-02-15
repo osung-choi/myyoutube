@@ -20,7 +20,7 @@ class PlayerFragViewModel : ViewModel() {
     fun setRecommendVideo(video: VideoDB) {
         _playVideo.value = video
 
-        val recommendSeq = getRecommendUserSeq(video.userSeq)
+        val recommendSeq = getRecommendUserSeq(video.uploadUserSeq)
         viewModelScope.launch {
             _recommendVideoData.value = videoRepo.getUserVideoList(recommendSeq)
         }

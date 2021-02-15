@@ -6,24 +6,114 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <ImageView
-            android:id="@+id/videoContentsImage"
+            android:id="@+id/videoLikeImage"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:padding="5dp"
-            tools:src="@drawable/ic_thumb_up"
+            android:src="@drawable/ic_thumb_up"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toLeftOf="@id/videoNotLikeImage"/>
 
         <TextView
-            android:id="@+id/videoContentsName"
-            android:layout_width="match_parent"
+            android:id="@+id/videoLikeCount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center"
+            android:textSize="12sp"
             tools:text="1.9천"
-            app:layout_constraintTop_toBottomOf="@id/videoContentsImage"
-            app:layout_constraintLeft_toLeftOf="@id/videoContentsImage"
-            app:layout_constraintRight_toRightOf="@id/videoContentsImage"/>
+            app:layout_constraintTop_toBottomOf="@id/videoLikeImage"
+            app:layout_constraintLeft_toLeftOf="@id/videoLikeImage"
+            app:layout_constraintRight_toRightOf="@id/videoLikeImage"/>
+
+        <ImageView
+            android:id="@+id/videoNotLikeImage"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_thumb_down"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/videoLikeImage"
+            app:layout_constraintRight_toLeftOf="@id/videoShareImage"/>
+
+        <TextView
+            android:id="@+id/videoNotLikeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            tools:text="1.9천"
+            app:layout_constraintTop_toBottomOf="@id/videoNotLikeImage"
+            app:layout_constraintLeft_toLeftOf="@id/videoNotLikeImage"
+            app:layout_constraintRight_toRightOf="@id/videoNotLikeImage"/>
+
+        <ImageView
+            android:id="@+id/videoShareImage"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_share"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/videoNotLikeImage"
+            app:layout_constraintRight_toLeftOf="@id/videoOfflineSaveImage"/>
+
+        <TextView
+            android:id="@+id/videoShareCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="공유"
+            app:layout_constraintTop_toBottomOf="@id/videoShareImage"
+            app:layout_constraintLeft_toLeftOf="@id/videoShareImage"
+            app:layout_constraintRight_toRightOf="@id/videoShareImage"/>
+
+        <ImageView
+            android:id="@+id/videoOfflineSaveImage"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_offline_save"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/videoShareImage"
+            app:layout_constraintRight_toLeftOf="@id/videoSaveImage"/>
+
+        <TextView
+            android:id="@+id/videoOfflineSaveCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="오프라...저장"
+            app:layout_constraintTop_toBottomOf="@id/videoOfflineSaveImage"
+            app:layout_constraintLeft_toLeftOf="@id/videoOfflineSaveImage"
+            app:layout_constraintRight_toRightOf="@id/videoOfflineSaveImage"/>
+
+        <ImageView
+            android:id="@+id/videoSaveImage"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_save"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/videoOfflineSaveImage"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:id="@+id/videoSaveCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="저장"
+            app:layout_constraintTop_toBottomOf="@id/videoSaveImage"
+            app:layout_constraintLeft_toLeftOf="@id/videoSaveImage"
+            app:layout_constraintRight_toRightOf="@id/videoSaveImage"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

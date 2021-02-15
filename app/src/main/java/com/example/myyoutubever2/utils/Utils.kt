@@ -67,24 +67,24 @@ object Utils {
 //            5)
 //    }
 //
-    fun getRecommendVideoData() : List<VideoDB> {
-        var seq = System.currentTimeMillis().toInt()
-
-        val recommendVideo = ArrayList<VideoDB>()
-        for (j in 0 until 20) {
-            val sampleRecommendVideo = VideoDB(seq++,
-                1,
-                "비디오 제목 샘플",
-                "비디오 내용 샘플",
-                "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
-                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
-                100,
-                5)
-            recommendVideo.add(sampleRecommendVideo)
-        }
-
-        return recommendVideo
-    }
+//    fun getRecommendVideoData() : List<VideoDB> {
+//        var seq = System.currentTimeMillis().toInt()
+//
+//        val recommendVideo = ArrayList<VideoDB>()
+//        for (j in 0 until 20) {
+//            val sampleRecommendVideo = VideoDB(seq++,
+//                1,
+//                "비디오 제목 샘플",
+//                "비디오 내용 샘플",
+//                "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg",
+//                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
+//                100,
+//                5)
+//            recommendVideo.add(sampleRecommendVideo)
+//        }
+//
+//        return recommendVideo
+//    }
 
     private fun getStatusBarHeight(context: Context): Int {
         var result = 0
@@ -104,5 +104,22 @@ object Utils {
         context.windowManager.defaultDisplay.getRealMetrics(metrics)
         val realWidth = metrics.widthPixels
         return if (realWidth > usableWidth) realWidth - usableWidth else 0
+    }
+
+    fun getSnsCount(count: Int): String {
+        return "$count"
+    }
+
+    fun getSnsViewCount(count: Int): String {
+        return when(count) {
+            in 0..999 -> "${count}회"
+            in 1000..9999 ->"${count/1000}천회"
+            in 10000..9999999 -> "${count/10000}만회"
+            else -> "${count/100000000}억회"
+        }
+    }
+
+    fun getSnsUploadDate(date: Long): String {
+        return "2개월 전"
     }
 }

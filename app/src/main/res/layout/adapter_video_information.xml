@@ -42,61 +42,22 @@
             android:id="@+id/videoViewCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            app:layout_constraintTop_toBottomOf="@id/videoTitle"
+            android:paddingStart="5dp"
+            android:paddingBottom="5dp"
             tools:text="조회수 28만회 , 1개월 전"
+            app:layout_constraintTop_toBottomOf="@id/videoTitle"
+            app:viewCount="@{video.viewCount}"
+            app:uploadDate="@{video.uploadDate}"
             style="@style/style_video_information"/>
 
         <com.example.myyoutubever2.view.VideoContentsView
             android:id="@+id/videoLike"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:paddingBottom="10dp"
             app:layout_constraintTop_toBottomOf="@id/videoViewCount"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/notVideoLike"
-            app:contentsImage="1"
-            app:contentsName="@{video.getLikeCount()}"/>
-
-        <com.example.myyoutubever2.view.VideoContentsView
-            android:id="@+id/notVideoLike"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/videoViewCount"
-            app:layout_constraintLeft_toRightOf="@id/videoLike"
-            app:layout_constraintRight_toLeftOf="@id/videoShare"
-            app:contentsImage="2"
-            app:contentsName="@{video.getNotLikeCount()}"/>
-
-        <com.example.myyoutubever2.view.VideoContentsView
-            android:id="@+id/videoShare"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/videoViewCount"
-            app:layout_constraintLeft_toRightOf="@id/notVideoLike"
-            app:layout_constraintRight_toLeftOf="@id/videoOffLineSave"
-            app:contentsImage="3"
-            app:contentsName="공유"/>
-
-        <com.example.myyoutubever2.view.VideoContentsView
-            android:id="@+id/videoOffLineSave"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/videoViewCount"
-            app:layout_constraintLeft_toRightOf="@id/videoShare"
-            app:layout_constraintRight_toLeftOf="@id/videoSave"
-            app:contentsImage="4"
-            app:contentsName="오프라...저장"/>
-
-        <com.example.myyoutubever2.view.VideoContentsView
-            android:id="@+id/videoSave"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/videoViewCount"
-            app:layout_constraintLeft_toRightOf="@id/videoOffLineSave"
-            app:layout_constraintRight_toRightOf="parent"
-            app:contentsImage="5"
-            app:contentsName="저장"/>
-
-
+            app:likeCount="@{video.likeCount}"
+            app:notLikeCount="@{video.notLikeCount}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
