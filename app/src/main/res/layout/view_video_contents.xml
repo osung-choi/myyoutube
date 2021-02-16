@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <merge tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
         <ImageView
             android:id="@+id/videoLikeImage"
             android:layout_width="35dp"
@@ -114,6 +112,5 @@
             app:layout_constraintTop_toBottomOf="@id/videoSaveImage"
             app:layout_constraintLeft_toLeftOf="@id/videoSaveImage"
             app:layout_constraintRight_toRightOf="@id/videoSaveImage"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </merge>
 </layout>
