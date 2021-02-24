@@ -1,13 +1,16 @@
 package com.example.myyoutubever2.adapter
 
+import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.database.entity.VideoDB
 import com.example.myyoutubever2.databinding.AdapterVideoInformationBinding
+import com.example.myyoutubever2.utils.Utils
 import kotlinx.android.synthetic.main.adapter_video_recommend.view.*
 
 class VideoRecommendAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -66,14 +69,25 @@ class VideoRecommendAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             video?.let {
                 binding.video = it
 
-//                binding.videoLike.setLikeCount(video.likeCount)
-//                binding.notVideoLike.setLikeCount(video.notLikeCount)
+                val tagList = listOf("건강", "취미생활", "보람찬 하루")
+
+                binding.videoHashTag.setData(tagList) { tag ->
+                    val label = "#$tag"
+                    val spannableString = SpannableString(label)
+                    spannableString
+                }
             }
         }
     }
 
     inner class VideoRecommendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(videoDB: VideoDB) {
+            val lp = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val px = Utils.convertDpToPx(itemView.context, 10)
+            lp.leftMargin = px
+            lp.rightMargin = px
+            itemView.videoPreview.layoutParams = lp
+
             itemView.videoPreview.setVideoPreview(videoDB)
         }
     }
