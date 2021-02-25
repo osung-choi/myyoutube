@@ -35,7 +35,7 @@ class MainVideoListAdapter(listener: (VideoDB) -> Unit): RecyclerView.Adapter<Re
             itemView.videoPreview.setVideoPreview(videoDB)
 
             itemView.setOnClickListener {
-                //listener.invoke(videoDB)
+                listener.invoke(videoDB)
             }
         }
     }

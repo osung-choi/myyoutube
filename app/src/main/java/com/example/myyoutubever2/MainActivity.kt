@@ -17,6 +17,7 @@ import com.example.myyoutubever2.fragment.MainSubscribeFragment
 import com.example.myyoutubever2.fragment.MainVideoListFragment
 import com.example.myyoutubever2.fragment.PlayerFragment
 import com.example.myyoutubever2.viewmodel.MainViewModel
+import com.example.myyoutubever2.viewmodel.PlayerFragViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -68,11 +69,18 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.playVideoDB.observe(this, {
-            val playerFragment = PlayerFragment.newInstance(it)
+            val fragment = supportFragmentManager.findFragmentByTag(PLAYER_FRAGMENT_TAG)
             fragmentPlayer.visibility = View.VISIBLE
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentPlayer, playerFragment)
-                .commit()
+
+            if(fragment == null) {
+                val playerFragment = PlayerFragment.newInstance(it)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentPlayer, playerFragment, PLAYER_FRAGMENT_TAG)
+                    .commit()
+            }else {
+                val playerViewModel = ViewModelProvider(fragment)[PlayerFragViewModel::class.java]
+                playerViewModel.setRecommendVideo(it)
+            }
         })
     }
 
@@ -96,5 +104,9 @@ class MainActivity : AppCompatActivity() {
 
         override fun getItemCount() = fragmentList.size
         override fun createFragment(position: Int) = fragmentList[position]
+    }
+
+    companion object {
+        const val PLAYER_FRAGMENT_TAG = "tagPlayerFregment"
     }
 }

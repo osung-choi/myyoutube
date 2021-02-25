@@ -1,6 +1,7 @@
 package com.example.myyoutubever2.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.adapter.VideoRecommendAdapter
 import com.example.myyoutubever2.databinding.VideoRecommendFragmentBinding
+import com.example.myyoutubever2.viewmodel.MainViewModel
 import com.example.myyoutubever2.viewmodel.PlayerFragViewModel
 
 class VideoRecommendFragment : Fragment() {
@@ -41,12 +43,23 @@ class VideoRecommendFragment : Fragment() {
         viewModel.playVideo.observe(viewLifecycleOwner, {
             val adapter = binding.listVideoRecommend.adapter as VideoRecommendAdapter
             adapter.setPlayVideo(it)
+
+            binding.loading.visibility = View.VISIBLE
+            binding.listVideoRecommend.visibility = View.GONE
+            binding.listVideoRecommend.scrollToPosition(0)
         })
 
         viewModel.recommendVideoData.observe(viewLifecycleOwner, {
             val adapter = binding.listVideoRecommend.adapter as VideoRecommendAdapter
             adapter.setRecommendVideoList(it)
+
+            binding.loading.visibility = View.GONE
+            binding.listVideoRecommend.visibility = View.VISIBLE
         })
+
+        (binding.listVideoRecommend.adapter as VideoRecommendAdapter).setRecommendVideoClickListener {
+            viewModel.setRecommendVideo(it)
+        }
     }
 
     companion object {

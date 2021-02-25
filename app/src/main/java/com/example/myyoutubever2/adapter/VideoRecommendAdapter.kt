@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.adapter_video_recommend.view.*
 class VideoRecommendAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = arrayListOf<VideoDB>()
     private var playVideo: VideoDB? = null
+    private var listener: ((VideoDB) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -63,6 +64,10 @@ class VideoRecommendAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemChanged(0)
     }
 
+    fun setRecommendVideoClickListener(listener: (VideoDB) -> Unit) {
+        this.listener = listener
+    }
+
     inner class VideoInformationViewHolder(private val binding: AdapterVideoInformationBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(video: VideoDB?) {
@@ -89,6 +94,10 @@ class VideoRecommendAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             itemView.videoPreview.layoutParams = lp
 
             itemView.videoPreview.setVideoPreview(videoDB)
+
+            itemView.setOnClickListener {
+                listener?.invoke(videoDB)
+            }
         }
     }
 

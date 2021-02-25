@@ -39,7 +39,7 @@ class PlayerFragment : Fragment() {
     private var layoutPipY = 0
     private var pipMarginBottom = 0
 
-    private var mLayoutState = LAYOUT_STATE_FULL
+    private var mLayoutState = LAYOUT_STATE_INIT
 
     private var firstY = 0.0F
     private var oldY = 0.0F
@@ -88,14 +88,21 @@ class PlayerFragment : Fragment() {
             .replace(R.id.fragmentVideoContents, videoRecommendFragment)
             .commit()
 
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(requireActivity().application))[PlayerFragViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PlayerFragViewModel::class.java]
         viewModel.setRecommendVideo(videoDB)
+
+        viewModel.playVideo.observe(viewLifecycleOwner, {
+            startVideo(it)
+        })
+
+        viewModel.fullLayout.observe(viewLifecycleOwner, {
+            if(mLayoutState == LAYOUT_STATE_PIP) onFullLayoutAnimator()
+        })
 
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         initSize()
         initEvent()
-        startVideo(videoDB)
 
         setStatusBarChange(Utils.getOrientation(context!!))
     }
@@ -166,12 +173,16 @@ class PlayerFragment : Fragment() {
 
     //비디오 정보 + 추천 비디오 정보를 한번에 넘겨주기
     private fun startVideo(videoDB: VideoDB) {
+        mView.visibility = View.VISIBLE
         mView.videoAlpha.alpha = 0F //video 투명도 지정하는 배경 초기화
-
-        setVideoViewSize(fullVideoWidth, fullVideoHeight)
-        onShowLayoutAnimator()
-
         mView.myVideoPlayer.initVideo(videoDB.thumbnailPath, videoDB.videoPath)
+
+        if(mLayoutState == LAYOUT_STATE_FULL) {
+            mView.myVideoPlayer.playVideo()
+        }else {
+            setVideoViewSize(fullVideoWidth, fullVideoHeight)
+            onShowLayoutAnimator()
+        }
     }
 
     fun isFullScreen() =
@@ -617,6 +628,7 @@ class PlayerFragment : Fragment() {
     }
 
     companion object {
+        const val LAYOUT_STATE_INIT = 0
         const val LAYOUT_STATE_FULL = 1
         const val LAYOUT_STATE_PIP = 2
 

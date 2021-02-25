@@ -83,10 +83,45 @@ abstract class AppDatabase : RoomDatabase() {
                         db.execSQL("insert into SubscribeDB (userSeq, userSubscribeSeq) values (0, 19)")
                         db.execSQL("insert into SubscribeDB (userSeq, userSubscribeSeq) values (0, 21)")
 
+                        val list = arrayListOf(
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/175b6688d67ff70f/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202011/11_175b6688d67ff70f.jpg"
+                            ),
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/175a0d4146f54e6f/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202011/07_175a0d4146f54e6f.jpg"
+                            ),
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/175ba32afe0395d3/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202011/12_175ba32afe0395d3.jpg"
+                            ),
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/175ba2578aa8ff03/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202011/12_175ba2578aa8ff03.jpg"
+                            ),
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/175b0b20ba8b88d3/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202011/10_175b0b20ba8b88d3.jpg"
+                            ),
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/175b665c134d2b3b/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202011/11_175b665c134d2b3b.jpg"
+                            ),
+                            Pair(
+                                "http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8",
+                                "http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg"
+                            ),
+                        )
+
+                        var j = 0
                         for (i in 0..21) {
-                            db.execSQL("insert into VideoDB (uploadUserSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount, viewCount, uploadDate, userSeq, nickname, profileImg) values ($i, '$i 번이 올린 비디오 1', '$i 번이 올린 비디오 내용 1', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 572, 13, 5, 123897132, ${System.currentTimeMillis()}, ${userDBList[i].userSeq}, '${userDBList[i].nickname}', '${userDBList[i].profileImg}')")
-                            db.execSQL("insert into VideoDB (uploadUserSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount, viewCount, uploadDate, userSeq, nickname, profileImg) values ($i, '$i 번이 올린 비디오 2', '$i 번이 올린 비디오 내용 2', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 572, 13, 5, 9832, ${System.currentTimeMillis()}, ${userDBList[i].userSeq}, '${userDBList[i].nickname}', '${userDBList[i].profileImg}')")
-                            db.execSQL("insert into VideoDB (uploadUserSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount, viewCount, uploadDate, userSeq, nickname, profileImg) values ($i, '$i 번이 올린 비디오 3', '$i 번이 올린 비디오 내용 3', 'http://data-dev.earlybird.ai:80/image/news/base/202008/18_173ff5638ea4fe1f.jpg', 'http://cache.midibus.kinxcdn.com/hls/ch_171e807a/173ff5638ea4fe1f/playlist.m3u8', 572, 13, 5, 8392374, ${System.currentTimeMillis()}, ${userDBList[i].userSeq}, '${userDBList[i].nickname}', '${userDBList[i].profileImg}')")
+                            for(k in 0..2) {
+                                db.execSQL("insert into VideoDB (uploadUserSeq, title, contents, thumbnailPath, videoPath, likeCount, notLikeCount, replyCount, viewCount, uploadDate, userSeq, nickname, profileImg) values ($i, '$i 번이 올린 비디오 1', '$i 번이 올린 비디오 내용 1', '${list[j].second}', '${list[j].first}', 572, 13, 5, 123897132, ${System.currentTimeMillis()}, ${userDBList[i].userSeq}, '${userDBList[i].nickname}', '${userDBList[i].profileImg}')")
+
+                                j++
+                                if(j == list.size) j = 0
+                            }
                         }
 
                     }
