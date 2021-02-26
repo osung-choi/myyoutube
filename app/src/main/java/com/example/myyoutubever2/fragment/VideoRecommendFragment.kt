@@ -1,7 +1,6 @@
 package com.example.myyoutubever2.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,10 @@ import com.example.myyoutubever2.R
 import com.example.myyoutubever2.adapter.VideoRecommendAdapter
 import com.example.myyoutubever2.databinding.VideoRecommendFragmentBinding
 import com.example.myyoutubever2.viewmodel.MainViewModel
-import com.example.myyoutubever2.viewmodel.PlayerFragViewModel
 
 class VideoRecommendFragment : Fragment() {
 
-    private lateinit var viewModel: PlayerFragViewModel
+    private lateinit var viewModel: MainViewModel
     private lateinit var binding : VideoRecommendFragmentBinding
 
     override fun onCreateView(
@@ -34,11 +32,10 @@ class VideoRecommendFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(parentFragment!!).get(PlayerFragViewModel::class.java)
-        binding.viewModel = viewModel
-
         binding.listVideoRecommend.layoutManager = LinearLayoutManager(context)
         binding.listVideoRecommend.adapter = VideoRecommendAdapter()
+
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
         viewModel.playVideo.observe(viewLifecycleOwner, {
             val adapter = binding.listVideoRecommend.adapter as VideoRecommendAdapter
@@ -58,7 +55,7 @@ class VideoRecommendFragment : Fragment() {
         })
 
         (binding.listVideoRecommend.adapter as VideoRecommendAdapter).setRecommendVideoClickListener {
-            viewModel.setRecommendVideo(it)
+            viewModel.startVideo(it)
         }
     }
 

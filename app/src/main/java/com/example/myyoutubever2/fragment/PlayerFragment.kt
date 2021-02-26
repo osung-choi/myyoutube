@@ -4,12 +4,14 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -18,13 +20,13 @@ import com.example.myyoutubever2.database.entity.VideoDB
 import com.example.myyoutubever2.utils.Utils
 import com.example.myyoutubever2.view.VideoPlayer
 import com.example.myyoutubever2.viewmodel.MainViewModel
-import com.example.myyoutubever2.viewmodel.PlayerFragViewModel
 import kotlinx.android.synthetic.main.fragment_player.view.*
 import kotlinx.android.synthetic.main.view_video_player.view.*
 import kotlin.math.abs
 
 class PlayerFragment : Fragment() {
     private var orientationEventListener: OrientationEventListener? = null
+    private lateinit var callback: OnBackPressedCallback
 
     private val mDuration = 200L
     private var padding = 0
@@ -48,7 +50,6 @@ class PlayerFragment : Fragment() {
 
     private lateinit var videoDB: VideoDB
     private lateinit var mView: View
-    private lateinit var viewModel: PlayerFragViewModel
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -57,7 +58,27 @@ class PlayerFragment : Fragment() {
         arguments?.let {
             videoDB = it.getSerializable(PARAM_VIDEO) as VideoDB
         }
+    }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if(mLayoutState == LAYOUT_STATE_FULL) {
+                    onPipLayoutAnimator()
+                }else {
+                    requireActivity().moveTaskToBack(true)
+                    requireActivity().finish()
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callback.remove()
     }
 
     override fun onStart() {
@@ -88,18 +109,11 @@ class PlayerFragment : Fragment() {
             .replace(R.id.fragmentVideoContents, videoRecommendFragment)
             .commit()
 
-        viewModel = ViewModelProvider(this)[PlayerFragViewModel::class.java]
-        viewModel.setRecommendVideo(videoDB)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-        viewModel.playVideo.observe(viewLifecycleOwner, {
+        mainViewModel.playVideo.observe(viewLifecycleOwner, {
             startVideo(it)
         })
-
-        viewModel.fullLayout.observe(viewLifecycleOwner, {
-            if(mLayoutState == LAYOUT_STATE_PIP) onFullLayoutAnimator()
-        })
-
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         initSize()
         initEvent()
@@ -651,5 +665,7 @@ class PlayerFragment : Fragment() {
                 }
             }
 
+        @JvmStatic
+        fun newInstance() = PlayerFragment()
     }
 }
