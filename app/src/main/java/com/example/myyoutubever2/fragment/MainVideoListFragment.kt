@@ -9,13 +9,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myyoutubever2.R
 import com.example.myyoutubever2.adapter.MainVideoListAdapter
 import com.example.myyoutubever2.databinding.MainVideoListFragmentBinding
 import com.example.myyoutubever2.viewmodel.MainVideoListViewModel
 import com.example.myyoutubever2.viewmodel.MainViewModel
 
-class MainVideoListFragment : Fragment() {
+class MainVideoListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         fun newInstance() = MainVideoListFragment()
@@ -39,6 +40,8 @@ class MainVideoListFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        binding.swipeRefresh.setOnRefreshListener(this)
+
         binding.mainVideoList.layoutManager = LinearLayoutManager(context)
         binding.mainVideoList.adapter = MainVideoListAdapter {
             val mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
@@ -48,8 +51,14 @@ class MainVideoListFragment : Fragment() {
         viewModel.allVideoList.observe(viewLifecycleOwner, {
             val adapter = binding.mainVideoList.adapter as MainVideoListAdapter
             adapter.setRecommendVideoList(it)
+
+            binding.swipeRefresh.isRefreshing = false
         })
 
+        viewModel.setRecommendVideoList()
+    }
+
+    override fun onRefresh() {
         viewModel.setRecommendVideoList()
     }
 }
