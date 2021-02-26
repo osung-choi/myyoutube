@@ -177,11 +177,9 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setLandscapeView() {
-        mView.post {
-            if(mLayoutState == LAYOUT_STATE_FULL) {
-                setLayoutSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                setVideoViewSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            }
+        if(mLayoutState == LAYOUT_STATE_FULL) {
+            setLayoutSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setVideoViewSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         }
     }
 
